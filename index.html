@@ -428,6 +428,12 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
     <div id="fbar"><!-- JS --></div>
   </div>
 
+  <div style="padding:10px 14px;border-top:1px solid var(--bd);margin-top:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <span id="sb-me-name" style="font-size:12px;font-weight:600;color:var(--mt)"></span>
+      <a onclick="changeProfile()" style="font-size:11px;color:var(--ac);cursor:pointer;font-weight:600">Cambiar perfil</a>
+    </div>
+  </div>
 </aside>
 
 <!-- ══════════════ MAIN ══════════════ -->
@@ -635,6 +641,13 @@ function submitNewProfile(){
   // Add to friends
   S.friends.push(name);S.picks[name]=ep();S.cur=name;
   scheduleSave();closeModal();render();
+}
+
+function changeProfile(){
+  // Wipes local identity and shows new profile screen
+  ME={name:'',pin:''};
+  try{localStorage.removeItem('wc26_me');}catch{}
+  showWelcomeNew();
 }
 
 function submitPinBack(){
@@ -882,6 +895,9 @@ function renderSidebarProgress(){
 }
 
 function rFbar(){
+  // Update sidebar identity label
+  const sbMe=document.getElementById('sb-me-name');
+  if(sbMe)sbMe.textContent=ME.name?`Hola, ${ME.name}`:'';
   let h='';
   for(let fi=0;fi<S.friends.length;fi++){const f=S.friends[fi];
     if(S.editing===f){h+=`<div class="ewrap"><input id="einp" class="einp" value="${esc(f)}" maxlength="20" onkeydown="if(event.key==='Enter')saveEdit('${js(f)}');if(event.key==='Escape')cancelEdit();" onblur="saveEdit('${js(f)}')"><span class="eok" onmousedown="event.preventDefault();saveEdit('${js(f)}')">✓</span><span class="exx" onmousedown="event.preventDefault();cancelEdit()">✕</span></div>`;}
