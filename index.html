@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quiniela Mundial 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ──────────────────────────────────────────── */
+:root{
+  --bg:#f0f2f5;--card:#ffffff;--card2:#f8f9fb;
+  --bd:#e4e7ef;--bd2:#c8cdd8;
+  --tx:#0d1526;--mt:#6e7a94;--mt2:#a0aab8;
+  --ac:#2563eb;--acl:#eff6ff;--acd:#1d4ed8;
+  --g1b:#fef9ec;--g1d:#fcd34d;--g1t:#78350f;
+  --g2b:#f1f5f9;--g2d:#94a3b8;--g2t:#334155;
+  --gn:#059669;--gnl:#ecfdf5;--gnd:#047857;
+  --rd:#dc2626;--am:#d97706;
+  --r:10px;--r2:14px;
+  --sh:0 1px 2px rgba(13,21,38,.04),0 3px 12px rgba(13,21,38,.06);
+  --sh2:0 4px 16px rgba(13,21,38,.08),0 12px 40px rgba(13,21,38,.10);
+  --sb-w:252px;
+  --tb-h:58px;
+  --fn-h:62px;
+  --transition: .2s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="dark"]{
+  --bg:#0d0f16;--card:#161a26;--card2:#1d2130;
+  --bd:#262c3e;--bd2:#374058;
+  --tx:#e2e8f5;--mt:#7a87a8;--mt2:#4a5570;
+  --ac:#3b82f6;--acl:#1e2d4a;--acd:#2563eb;
+  --g1b:#2a2010;--g1d:#92680e;--g1t:#fde68a;
+  --g2b:#1a2030;--g2d:#374058;--g2t:#94a3b8;
+  --gn:#10b981;--gnl:#0d2b20;--gnd:#34d399;
+  --rd:#ef4444;--am:#f59e0b;
+  --sh:0 1px 2px rgba(0,0,0,.2),0 3px 12px rgba(0,0,0,.25);
+  --sh2:0 4px 16px rgba(0,0,0,.3),0 12px 40px rgba(0,0,0,.35);
+}
+
+/* ── RESET ───────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;transition:background var(--transition),color var(--transition)}
+
+/* ── LAYOUT ──────────────────────────────────────────── */
+#sidebar{
+  width:var(--sb-w);min-width:var(--sb-w);
+  background:var(--card);
+  border-right:1px solid var(--bd);
+  display:flex;flex-direction:column;
+  height:100vh;position:sticky;top:0;
+  overflow-y:auto;overflow-x:hidden;
+  transition:background var(--transition),border-color var(--transition);
+  scrollbar-width:thin;scrollbar-color:var(--bd2) transparent;
+}
+#main{flex:1;display:flex;flex-direction:column;min-width:0;overflow-x:hidden}
+#topbar{
+  background:var(--card);border-bottom:1px solid var(--bd);
+  padding:0 24px;
+  height:var(--tb-h);min-height:var(--tb-h);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  position:sticky;top:0;z-index:10;
+  transition:background var(--transition),border-color var(--transition);
+}
+#content{flex:1;padding:22px 24px calc(var(--fn-h) + 24px);overflow-y:auto}
+
+/* ── SIDEBAR LOGO ────────────────────────────────────── */
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.sb-logo-mark{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.sb-logo-ball{width:32px;height:32px;border-radius:9px;background:var(--ac);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.sb-logo-title{font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;letter-spacing:-.3px;line-height:1.1;color:var(--tx)}
+.sb-logo-sub{font-size:10px;color:var(--mt);font-weight:500;letter-spacing:.1px}
+.sb-live{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--gnl);border:1px solid var(--gn);border-radius:20px;font-size:10px;font-weight:700;color:var(--gnd);margin-top:1px}
+.ldot{width:5px;height:5px;border-radius:50%;background:var(--gn);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── SIDEBAR NAV ─────────────────────────────────────── */
+.sb-section{padding:8px 10px}
+.sb-label{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--mt2);padding:6px 6px 3px;display:block}
+.sb-btn{
+  display:flex;align-items:center;gap:9px;width:100%;
+  padding:8px 8px;border-radius:8px;border:none;
+  background:none;color:var(--mt);cursor:pointer;
+  font-size:12.5px;font-weight:500;font-family:'DM Sans',sans-serif;
+  text-align:left;transition:all .15s;margin-bottom:1px;
+  white-space:nowrap;overflow:hidden;
+}
+.sb-btn:hover{background:var(--bg);color:var(--tx)}
+.sb-btn.on{background:var(--acl);color:var(--ac);font-weight:700}
+.sb-btn.on .sb-ico{opacity:1;color:var(--ac)}
+.sb-btn.dash.on{background:var(--gnl);color:var(--gnd)}
+.sb-btn.dash.on .sb-ico{color:var(--gnd)}
+.sb-btn.ins.on{background:#fff7ed;color:#c2410c}
+.sb-btn.ins.on .sb-ico{color:#c2410c}
+.sb-btn.adm.on{background:#fef9c3;color:#92400e}
+.sb-btn.adm.on .sb-ico{color:#92400e}
+[data-theme="dark"] .sb-btn.ins.on{background:#2d1a0a;color:#fb923c}
+[data-theme="dark"] .sb-btn.adm.on{background:#2d2408;color:#fbbf24}
+.sb-ico{width:15px;height:15px;flex-shrink:0;opacity:.45;transition:opacity .15s;color:var(--tx)}
+.sb-divider{height:1px;background:var(--bd);margin:2px 10px}
+
+/* ── PROGRESS IN SIDEBAR ─────────────────────────────── */
+#sb-progress{padding:8px 10px}
+.sbp-label{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--mt2);padding:4px 6px;display:block;margin-bottom:2px}
+.sbp-row{display:flex;align-items:center;gap:7px;padding:5px 6px;border-radius:6px;cursor:pointer;transition:background .12s}
+.sbp-row:hover{background:var(--bg)}
+.sbp-dot{width:7px;height:7px;border-radius:50%;background:var(--bd2);flex-shrink:0;transition:background .2s}
+.sbp-dot.done{background:var(--gn)}
+.sbp-dot.active{background:var(--ac)}
+.sbp-dot.skip{background:var(--bd)}
+.sbp-txt{font-size:11.5px;color:var(--mt);flex:1;font-weight:500}
+.sbp-txt.done{color:var(--gnd)}
+.sbp-txt.active{color:var(--ac);font-weight:700}
+.sbp-val{font-size:10px;font-weight:700;color:var(--mt2);font-family:'Outfit',sans-serif}
+.sbp-val.done{color:var(--gnd)}
+
+/* ── FRIENDS ─────────────────────────────────────────── */
+.sb-friends{padding:6px 10px 10px;flex:1}
+.sb-friends-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 6px 5px}
+.sb-friends-lbl{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--mt2)}
+.addf-sb{border:none;background:none;color:var(--ac);font-size:11px;font-weight:700;cursor:pointer;padding:2px 5px;border-radius:5px;font-family:'DM Sans',sans-serif;transition:background .15s}
+.addf-sb:hover{background:var(--acl)}
+.ftab{
+  display:flex;align-items:center;gap:7px;width:100%;
+  padding:6px 6px;border-radius:8px;
+  border:none;background:none;cursor:pointer;
+  font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;
+  text-align:left;transition:all .14s;color:var(--tx);
+  margin-bottom:1px;position:relative;
+}
+.ftab:hover{background:var(--bg)}
+.ftab.on{background:var(--ac);color:#fff}
+.favt{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;font-family:'Outfit',sans-serif}
+.fnm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+.ftab-actions{display:none;gap:1px;align-items:center;margin-left:auto}
+.ftab:hover .ftab-actions,.ftab.on .ftab-actions{display:flex}
+.fic{border:none;background:none;cursor:pointer;padding:2px 4px;border-radius:4px;font-size:10px;color:currentColor;opacity:.5;transition:opacity .13s;font-family:inherit;line-height:1}
+.fic:hover{opacity:1}
+.ewrap{display:flex;align-items:center;gap:5px;padding:5px 7px;border-radius:8px;border:1.5px solid var(--ac);background:var(--acl);margin-bottom:2px}
+.einp{border:none;outline:none;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--tx);background:transparent;flex:1;min-width:0}
+.eok{cursor:pointer;font-size:12px;color:var(--gn);font-weight:700}
+.exx{cursor:pointer;font-size:11px;color:var(--mt)}
+
+/* ── TOPBAR ──────────────────────────────────────────── */
+.tb-left{display:flex;flex-direction:column;gap:1px}
+.tb-title{font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;letter-spacing:-.3px;color:var(--tx)}
+.tb-sub{font-size:11px;color:var(--mt);font-weight:500}
+.tb-right{display:flex;align-items:center;gap:8px}
+.tb-btn{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--bd);background:var(--card2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;color:var(--mt);flex-shrink:0}
+.tb-btn:hover{border-color:var(--bd2);color:var(--tx);background:var(--bg)}
+#mob-toggle{display:none}
+
+/* ── CARDS ───────────────────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh);transition:background var(--transition),border-color var(--transition)}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--bd)}
+.card-title{font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;color:var(--tx)}
+.ptag{font-size:10px;background:var(--acl);color:var(--ac);padding:3px 9px;border-radius:20px;font-weight:700;letter-spacing:.2px}
+
+/* ── STAT CARDS ──────────────────────────────────────── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.stat-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh);padding:16px;transition:all var(--transition)}
+.stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--mt);margin-bottom:8px}
+.stat-val{font-family:'Outfit',sans-serif;font-size:26px;font-weight:900;letter-spacing:-.5px;line-height:1;color:var(--tx)}
+.stat-sub{font-size:11px;color:var(--mt);margin-top:5px;font-weight:500}
+.stat-card.accent{background:var(--ac);border-color:var(--ac)}
+.stat-card.accent .stat-lbl,.stat-card.accent .stat-val,.stat-card.accent .stat-sub{color:#fff}
+.stat-card.accent .stat-lbl{opacity:.8}
+.stat-card.green{background:var(--gn);border-color:var(--gn)}
+.stat-card.green .stat-lbl,.stat-card.green .stat-val,.stat-card.green .stat-sub{color:#fff}
+.stat-card.green .stat-lbl{opacity:.8}
+
+/* ── GROUPS ──────────────────────────────────────────── */
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:9px;margin-bottom:16px}
+.gcard{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh);overflow:hidden;transition:all var(--transition)}
+.gcard:hover{box-shadow:var(--sh2)}
+.ghdr{display:flex;justify-content:space-between;align-items:center;padding:10px 12px 8px;background:var(--card2);border-bottom:1px solid var(--bd)}
+.glbl{font-family:'Outfit',sans-serif;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--mt)}
+.gok{font-size:10px;font-weight:700;color:var(--gn);display:flex;align-items:center;gap:3px}
+.gteams{padding:5px 7px 7px}
+.trow{display:flex;align-items:center;justify-content:space-between;padding:6px 7px;border-radius:7px;cursor:pointer;border:1px solid transparent;transition:all .12s;margin-bottom:2px}
+.trow:last-child{margin-bottom:0}
+.trow:hover{background:var(--bg);border-color:var(--bd)}
+.trow.r1{background:var(--g1b);border-color:var(--g1d)}
+.trow.r2{background:var(--g2b);border-color:var(--g2d)}
+.trow.full{cursor:not-allowed;opacity:.4}
+.tnm{font-size:12px;font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:5px;color:var(--tx)}
+.rbdg{font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;min-width:22px;text-align:center;flex-shrink:0}
+.rbdg.b1{background:var(--g1d);color:var(--g1t)}
+.rbdg.b2{background:var(--g2d);color:var(--g2t)}
+.rbdg.b3{background:#fed7aa;color:#9a3412}
+
+/* ── PROGRESS BAR ────────────────────────────────────── */
+.prog-wrap{margin-bottom:14px}
+.prog-lbl{font-size:11px;font-weight:700;color:var(--mt);margin-bottom:5px;display:flex;justify-content:space-between}
+.prog-bar{height:5px;background:var(--bd);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;background:var(--ac);transition:width .4s ease}
+
+/* ── T8 ──────────────────────────────────────────────── */
+.t8-hint{font-size:13px;color:var(--mt);text-align:center;padding:20px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh);line-height:1.7}
+.t8-section{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh);padding:16px 18px;margin-top:4px}
+.t8-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px}
+.t8-ttl{font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;color:var(--tx)}
+.t8-counter{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;background:var(--bg);border:1px solid var(--bd);font-size:12px;font-weight:700;color:var(--tx)}
+.t8-counter.full{background:var(--gnl);border-color:var(--gn);color:var(--gnd)}
+.t8-counter span{font-family:'Outfit',sans-serif;font-size:15px}
+.t8-sub{font-size:12px;color:var(--mt);margin-bottom:12px;line-height:1.6}
+.t8-groups{display:flex;flex-direction:column;gap:7px}
+.t8-row{display:flex;align-items:flex-start;gap:10px}
+.t8-glbl{font-size:10px;font-weight:700;color:var(--mt);text-transform:uppercase;letter-spacing:.5px;min-width:48px;padding-top:5px}
+.t8-chips{display:flex;flex-wrap:wrap;gap:4px}
+.t8-chip{padding:4px 10px;border-radius:20px;border:1px solid var(--bd);background:var(--bg);font-size:12px;font-weight:500;cursor:pointer;transition:all .12s;color:var(--tx)}
+.t8-chip:hover:not(.dis){border-color:var(--ac);color:var(--ac);background:var(--acl)}
+.t8-chip.sel{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.t8-chip.dis{opacity:.3;cursor:not-allowed}
+
+/* ── MATCHES ─────────────────────────────────────────── */
+.phase{margin-bottom:20px}
+.phdr{font-size:10px;font-weight:700;color:var(--mt);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.mcard{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);box-shadow:var(--sh);padding:12px;transition:all var(--transition)}
+.mlbl{font-size:10px;color:var(--mt);font-weight:600;margin-bottom:8px;letter-spacing:.3px;text-transform:uppercase}
+.mrow{display:flex;gap:5px;align-items:stretch}
+.mbtn{flex:1;padding:9px 5px;border:1.5px solid var(--bd);border-radius:7px;background:var(--card2);cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;text-align:center;line-height:1.3;word-break:break-word;min-height:40px;display:flex;align-items:center;justify-content:center;transition:all .12s;color:var(--tx)}
+.mbtn:hover:not(:disabled){border-color:var(--ac);color:var(--ac);background:var(--acl)}
+.mbtn.on{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:700}
+.mbtn:disabled{opacity:.28;cursor:default}
+.vsbdg{display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--mt2);padding:0 2px;flex-shrink:0}
+.t3row{display:flex;gap:5px;margin-bottom:8px}
+.t3row select{flex:1;padding:6px 8px;border:1px solid var(--bd);border-radius:7px;font-size:11px;font-family:'DM Sans',sans-serif;background:var(--card2);color:var(--tx);cursor:pointer;outline:none}
+.t3row select:focus{border-color:var(--ac)}
+
+/* ── FINAL ───────────────────────────────────────────── */
+.fw{max-width:480px;margin:0 auto}
+.fc{background:var(--card);border:2px solid var(--g1d);border-radius:var(--r2);padding:22px;margin-bottom:12px;text-align:center;box-shadow:var(--sh)}
+.fttl{font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;color:var(--g1t);margin-bottom:14px}
+.champ{margin-top:14px;font-family:'Outfit',sans-serif;font-size:18px;font-weight:900;color:var(--g1t)}
+
+/* ── DASHBOARD ───────────────────────────────────────── */
+.dash-hero-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+@media(max-width:480px){.dash-hero-row{grid-template-columns:1fr}}
+.dash-hero{background:linear-gradient(135deg,var(--gn) 0%,var(--gnd) 100%);border-radius:var(--r2);padding:18px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
+.dash-hero-rank{font-family:'Outfit',sans-serif;font-size:44px;font-weight:900;line-height:1;flex-shrink:0}
+.dash-hero-name{font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;line-height:1.2;margin-bottom:3px;color:#fff}
+.dash-hero-pts{font-size:12px;color:rgba(255,255,255,.8)}
+.dash-hero-pts strong{font-size:20px;font-family:'Outfit',sans-serif;font-weight:900;color:#fff}
+.dash-pts-grid{display:flex;flex-direction:column;gap:5px}
+.dash-pts-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--sh)}
+.dash-pts-lbl{font-size:11px;color:var(--mt);font-weight:600}
+.dash-pts-val{font-size:12px;color:var(--mt);font-family:'Outfit',sans-serif;font-weight:700}
+.lb{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh)}
+.lbhdr{padding:13px 16px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+.lbhtitle{font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;color:var(--tx)}
+.lbhsub{font-size:11px;color:var(--mt)}
+.lbrow{display:flex;align-items:center;gap:11px;padding:11px 16px;border-bottom:1px solid var(--bd);transition:background .1s}
+.lbrow:last-child{border-bottom:none}
+.lbrow:hover{background:var(--card2)}
+.lbrow.me{background:var(--acl);border-left:3px solid var(--ac)}
+[data-theme="dark"] .lbrow:hover{background:var(--card2)}
+.lbrnk{font-family:'Outfit',sans-serif;font-size:18px;font-weight:900;min-width:28px;text-align:center}
+.lbnm{font-weight:700;font-size:13px;color:var(--tx)}
+.lbdet{font-size:11px;color:var(--mt);margin-top:2px}
+.lbbar{height:3px;background:var(--bd);border-radius:2px;margin-top:6px;overflow:hidden}
+.lbbar-fill{height:100%;border-radius:2px;background:var(--ac);transition:width .5s ease}
+.lbpts{font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;color:var(--gn);margin-left:auto;white-space:nowrap}
+.no-results{text-align:center;padding:32px 20px;color:var(--mt);background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh);margin-bottom:12px}
+.no-results-icon{font-size:34px;margin-bottom:10px}
+
+/* ── INSTRUCCIONES ───────────────────────────────────── */
+.ins-wrap{display:flex;flex-direction:column;gap:10px;max-width:600px}
+.ins-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh);padding:16px 18px;transition:background var(--transition)}
+.ins-step{display:flex;gap:12px;align-items:flex-start}
+.ins-num{width:32px;height:32px;border-radius:9px;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;flex-shrink:0}
+.ins-title{font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;margin-bottom:4px;color:var(--tx)}
+.ins-desc{font-size:12.5px;color:var(--mt);line-height:1.7}
+.ins-desc strong{color:var(--tx)}
+.pts-table{width:100%;border-collapse:collapse;margin-top:10px}
+.pts-table th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mt);text-align:left;padding:5px 8px;border-bottom:1px solid var(--bd)}
+.pts-table td{font-size:12.5px;padding:7px 8px;border-bottom:1px solid var(--bd);color:var(--tx)}
+.pts-table tr:last-child td{border-bottom:none}
+.pts-val{font-family:'Outfit',sans-serif;font-weight:800;color:var(--ac);text-align:right}
+
+/* ── ADMIN ───────────────────────────────────────────── */
+.admnotice{background:#fefce8;border:1px solid #fef08a;border-radius:var(--r);padding:10px 14px;margin-bottom:12px;font-size:12px;color:#713f12;line-height:1.6}
+[data-theme="dark"] .admnotice{background:#2d2408;border-color:#78580a;color:#fbbf24}
+.admsubs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px}
+.adms{padding:6px 13px;border-radius:8px;border:1px solid var(--bd);background:var(--card);cursor:pointer;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--mt);transition:all .15s;box-shadow:var(--sh)}
+.adms:hover{border-color:var(--bd2);color:var(--tx)}
+.adms.on{background:#f59e0b;color:#fff;border-color:#f59e0b}
+.syncrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.syncbtn{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:9px;border:1px solid var(--gn);background:var(--gnl);color:var(--gnd);cursor:pointer;font-size:12.5px;font-weight:700;font-family:'DM Sans',sans-serif;transition:all .18s}
+.syncbtn:hover:not(:disabled){background:var(--gn);color:#fff}
+.syncbtn:disabled{opacity:.6;cursor:default}
+.bkp-btn{padding:9px 13px;border:1px solid var(--bd);border-radius:9px;background:var(--card);cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600;color:var(--mt);transition:all .15s}
+.bkp-btn:hover{border-color:var(--bd2);color:var(--tx)}
+.syncst{font-size:12px;font-weight:600}
+.syncst.ok{color:var(--gn)}
+.syncst.err{color:var(--rd)}
+.adm-g-card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r2);box-shadow:var(--sh);overflow:hidden;transition:background var(--transition)}
+.adm-trow{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .12s;margin:0 5px 2px}
+.adm-trow:hover{background:var(--bg);border-color:var(--bd)}
+.adm-trow.r1{background:var(--g1b);border-color:var(--g1d)}
+.adm-trow.r2{background:var(--g2b);border-color:var(--g2d)}
+.adm-trow.r3{background:#fff7ed;border-color:#fed7aa}
+[data-theme="dark"] .adm-trow.r3{background:#2d1a08;border-color:#92450e}
+
+/* ── BACKUPS ─────────────────────────────────────────── */
+.bk-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--card2);border-radius:8px;border:1px solid var(--bd)}
+.bk-lbl{font-size:11px;color:var(--mt);flex:1}
+.bk-restore{padding:3px 9px;border:1px solid var(--bd);border-radius:5px;background:var(--card);cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;color:var(--rd);font-weight:700;transition:all .13s}
+.bk-restore:hover{background:var(--rd);color:#fff;border-color:var(--rd)}
+
+/* ── HINT / WARN ─────────────────────────────────────── */
+.hint{font-size:12px;color:var(--mt);margin-bottom:10px;line-height:1.6}
+.warn-hint{font-size:12px;padding:10px 14px;background:var(--g1b);border:1px solid var(--g1d);border-radius:8px;color:var(--g1t);margin-bottom:10px;line-height:1.6}
+[data-theme="dark"] .warn-hint{background:#2a1f08;color:#fde68a}
+
+/* ── FLOAT NEXT ──────────────────────────────────────── */
+#float-next{
+  position:fixed;bottom:0;left:var(--sb-w);right:0;z-index:50;
+  display:none;padding:10px 24px 12px;
+  background:var(--card);border-top:1px solid var(--bd);
+  box-shadow:0 -4px 24px rgba(0,0,0,.10);
+  transition:background var(--transition),border-color var(--transition);
+}
+.fn-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.fn-txt{font-size:13px;color:var(--mt);font-weight:600;display:flex;align-items:center;gap:7px}
+.fn-btn{padding:9px 20px;border:none;border-radius:9px;background:var(--gn);color:#fff;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:all .15s;box-shadow:0 2px 8px rgba(5,150,105,.3)}
+.fn-btn:hover{background:var(--gnd);transform:translateY(-1px)}
+
+/* ── MISC ────────────────────────────────────────────── */
+.spin{display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.next-step{display:none}
+
+/* ── MOBILE ──────────────────────────────────────────── */
+#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99}
+#mob-overlay.on{display:block}
+@media(max-width:720px){
+  #sidebar{position:fixed;left:calc(var(--sb-w)*-1);transition:left .25s;z-index:100;top:0;height:100%;box-shadow:none}
+  #sidebar.open{left:0;box-shadow:var(--sh2)}
+  #main{margin-left:0}
+  #mob-toggle{display:flex}
+  #float-next{left:0}
+  #content{padding:16px 14px calc(var(--fn-h) + 16px)}
+}
+@media(max-width:480px){
+  .ggrid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .stats-row{grid-template-columns:1fr 1fr}
+}
+</style>
+<template id="__bundler_thumbnail" data-bg-color="#f0f2f5">
+  <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#f0f2f5"/>
+    <!-- Sidebar -->
+    <rect x="0" y="0" width="100" height="300" fill="#ffffff" rx="0"/>
+    <rect x="12" y="16" width="24" height="24" rx="6" fill="#2563eb"/>
+    <text x="20" y="32" font-size="14" fill="white">🌎</text>
+    <rect x="12" y="52" width="76" height="8" rx="4" fill="#e4e7ef"/>
+    <rect x="12" y="68" width="60" height="7" rx="3" fill="#e4e7ef"/>
+    <rect x="12" y="82" width="50" height="7" rx="3" fill="#e4e7ef"/>
+    <rect x="12" y="96" width="66" height="7" rx="3" fill="#e4e7ef"/>
+    <!-- Topbar -->
+    <rect x="100" y="0" width="300" height="40" fill="#ffffff"/>
+    <rect x="112" y="12" width="80" height="10" rx="4" fill="#0d1526"/>
+    <!-- Cards -->
+    <rect x="112" y="52" width="82" height="50" rx="10" fill="#ffffff"/>
+    <rect x="202" y="52" width="82" height="50" rx="10" fill="#2563eb"/>
+    <rect x="292" y="52" width="82" height="50" rx="10" fill="#059669"/>
+    <!-- Leaderboard -->
+    <rect x="112" y="114" width="262" height="12" rx="4" fill="#ffffff"/>
+    <rect x="112" y="132" width="262" height="12" rx="4" fill="#ffffff"/>
+    <rect x="112" y="150" width="262" height="12" rx="4" fill="#eff6ff"/>
+    <rect x="112" y="168" width="262" height="12" rx="4" fill="#ffffff"/>
+  </svg>
+</template>
+</head>
+<body>
+
+<div id="mob-overlay" onclick="closeSidebar()"></div>
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside id="sidebar">
+
+  <div class="sb-logo">
+    <div class="sb-logo-mark">
+      <div class="sb-logo-ball">🌎</div>
+      <div>
+        <div class="sb-logo-title">Mundial 2026</div>
+        <div class="sb-logo-sub">EE.UU · México · Canadá</div>
+      </div>
+    </div>
+    <div class="sb-live"><span class="ldot"></span> Datos en vivo</div>
+  </div>
+
+  <div class="sb-section" id="sb-nav"><!-- JS --></div>
+
+  <div class="sb-divider"></div>
+
+  <div id="sb-progress" style="display:none"><!-- JS --></div>
+
+  <div class="sb-divider" id="sb-prog-divider" style="display:none"></div>
+
+  <div class="sb-friends">
+    <div class="sb-friends-hdr">
+      <span class="sb-friends-lbl">Participantes</span>
+      <button class="addf-sb" onclick="S.adding=true;render();setTimeout(()=>{const i=document.getElementById('ainp');if(i)i.focus();},0)">+ Agregar</button>
+    </div>
+    <div id="fbar"><!-- JS --></div>
+  </div>
+
+</aside>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main id="main">
+
+  <div id="topbar">
+    <div class="tb-left">
+      <div class="tb-title" id="tb-title">Dashboard</div>
+      <div class="tb-sub">11 Jun – 19 Jul 2026</div>
+    </div>
+    <div class="tb-right">
+      <!-- Dark mode toggle -->
+      <button class="tb-btn" id="theme-btn" onclick="toggleTheme()" title="Cambiar tema">
+        <svg id="ico-sun" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg id="ico-moon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <button class="tb-btn" id="mob-toggle" onclick="openSidebar()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="content"></div>
+
+</main>
+
+<!-- Float next -->
+<div id="float-next">
+  <div class="fn-inner">
+    <div class="fn-txt"></div>
+    <button class="fn-btn" onclick="floatNextClick()"></button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════
+const GRP={
+  A:['México','Corea del Sur','Sudáfrica','Rep. Checa'],
+  B:['Canadá','Suiza','Qatar','Bosnia y Herz.'],
+  C:['Brasil','Marruecos','Escocia','Haití'],
+  D:['EE. UU.','Paraguay','Australia','Turquía'],
+  E:['Alemania','Ecuador','Costa de Marfil','Curazao'],
+  F:['Países Bajos','Japón','Túnez','Suecia'],
+  G:['Bélgica','Irán','Egipto','Nueva Zelanda'],
+  H:['España','Uruguay','Arabia Saudita','Cabo Verde'],
+  I:['Francia','Senegal','Noruega','Irak'],
+  J:['Argentina','Austria','Argelia','Jordania'],
+  K:['Portugal','Colombia','Uzbekistán','R.D. Congo'],
+  L:['Inglaterra','Croacia','Panamá','Ghana'],
+};
+const ALL=Object.values(GRP).flat();
+const R32_FIXED=[
+  {i:0,c1:'2A',c2:'2B'},{i:2,c1:'1F',c2:'2C'},{i:3,c1:'1C',c2:'2F'},
+  {i:5,c1:'2E',c2:'2I'},{i:10,c1:'2K',c2:'2L'},{i:11,c1:'1H',c2:'2J'},
+  {i:13,c1:'1J',c2:'2H'},{i:15,c1:'2D',c2:'2G'},
+];
+const R32_THIRDS=[
+  {i:1,c1:'1E'},{i:4,c1:'1I'},{i:6,c1:'1A'},{i:7,c1:'1L'},
+  {i:8,c1:'1D'},{i:9,c1:'1G'},{i:12,c1:'1B'},{i:14,c1:'1K'},
+];
+const R16B=[[0,1],[2,3],[4,5],[6,7],[8,9],[10,11],[12,13],[14,15]];
+const QFB=[[0,1],[2,3],[4,5],[6,7]];
+const SFB=[[0,1],[2,3]];
+const PTS={p1:3,p2:2,t8:2,r32:2,r16:3,qf:4,sf:5,fin:8,thr:4};
+
+// ══════════════════════════════════════════════════════
+// THEME
+// ══════════════════════════════════════════════════════
+function initTheme(){
+  const saved=localStorage.getItem('wc26_theme')||'light';
+  document.documentElement.setAttribute('data-theme',saved);
+  updateThemeIcons(saved);
+}
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('wc26_theme',next);
+  updateThemeIcons(next);
+}
+function updateThemeIcons(theme){
+  const sun=document.getElementById('ico-sun');
+  const moon=document.getElementById('ico-moon');
+  if(sun)sun.style.display=theme==='dark'?'block':'none';
+  if(moon)moon.style.display=theme==='dark'?'none':'block';
+}
+initTheme();
+
+// ══════════════════════════════════════════════════════
+// JSONBIN
+// ══════════════════════════════════════════════════════
+let CFG={key:'$2a$10$EuC2WTwuW0nQR2DLlNmLSuh0Uq8uW5CJ0ZzyEjn80i6jBcF11KAVq',bin:'69d179fd856a682189fd4ed5'};
+let BACKUPS=[];
+function saveBackup(label){
+  const snap=JSON.parse(JSON.stringify({admin:S.adminR,thirds_bracket:S.thirds_bracket}));
+  BACKUPS.unshift({ts:Date.now(),label:label||'Manual',data:snap});
+  if(BACKUPS.length>5)BACKUPS.pop();
+  try{localStorage.setItem('wc26_backups',JSON.stringify(BACKUPS));}catch{}
+  render();
+}
+function loadBackups(){try{const b=localStorage.getItem('wc26_backups');if(b)BACKUPS=JSON.parse(b);}catch{}}
+function restoreBackup(idx){
+  if(!confirm('¿Restaurar este backup? Se perderán los cambios actuales.'))return;
+  const b=BACKUPS[idx];if(!b)return;
+  S.adminR=JSON.parse(JSON.stringify(b.data.admin));
+  S.thirds_bracket=JSON.parse(JSON.stringify(b.data.thirds_bracket||Array(8).fill('')));
+  scheduleSave();render();
+}
+let _pollTimer=null,_dirty=false,_saveTimer=null;
+const jbHeaders=()=>({'Content-Type':'application/json','X-Master-Key':CFG.key,'X-Bin-Versioning':'false'});
+async function jbGet(){const r=await fetch(`https://api.jsonbin.io/v3/b/${CFG.bin}/latest`,{headers:{'X-Master-Key':CFG.key}});if(!r.ok)throw new Error('GET '+r.status);const d=await r.json();return d.record||{};}
+async function jbSet(data){const r=await fetch(`https://api.jsonbin.io/v3/b/${CFG.bin}`,{method:'PUT',headers:jbHeaders(),body:JSON.stringify(data)});if(!r.ok)throw new Error('PUT '+r.status);return r.json();}
+function scheduleSave(){_dirty=true;clearTimeout(_saveTimer);_saveTimer=setTimeout(async()=>{if(!_dirty)return;_dirty=false;try{await jbSet(toCloud());}catch(e){console.warn('Save failed',e);}},600);}
+function startPolling(){clearInterval(_pollTimer);_pollTimer=setInterval(async()=>{try{const r=await jbGet();if(r&&r._ts&&r._ts!==S._ts){fromCloud(r);S._ts=r._ts;render();}}catch{}},10000);}
+
+jbGet().then(data=>{boot(data||{});}).catch(()=>{boot({});});
+
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let S={friends:[],cur:null,tab:'grupos',sub:'grupos',picks:{},adminR:null,thirds_bracket:Array(8).fill(''),editing:null,adding:false,sync:'idle',syncMsg:'',_ts:0};
+
+function ep(){return{grupos:Object.fromEntries(Object.keys(GRP).map(g=>[g,{p1:'',p2:''}])),t8:[],r32:Array(16).fill(''),r16:Array(8).fill(''),qf:Array(4).fill(''),sf:Array(2).fill(''),fin:'',thr:''};}
+function eAdm(){return{grupos:Object.fromEntries(Object.keys(GRP).map(g=>[g,{p1:'',p2:'',p3:''}])),t8:[],r32:Array(16).fill(''),r16:Array(8).fill(''),qf:Array(4).fill(''),sf:Array(2).fill(''),fin:'',thr:''};}
+
+function mergeP(v,base){const b=base||ep();if(!v)return b;if(v.grupos)for(const g of Object.keys(GRP)){if(v.grupos&&v.grupos[g])Object.assign(b.grupos[g],{p1:v.grupos[g].p1||'',p2:v.grupos[g].p2||''});}if(v.t8)b.t8=Array.isArray(v.t8)?[...v.t8]:Object.values(v.t8);['r32','r16','qf','sf'].forEach(k=>{if(v[k]){const a=Array.isArray(v[k])?v[k]:Object.values(v[k]);a.forEach((x,i)=>{if(i<b[k].length)b[k][i]=x||'';});}});if(v.fin)b.fin=v.fin;if(v.thr)b.thr=v.thr;return b;}
+function mergeA(v){const b=eAdm();if(!v)return b;if(v.grupos)for(const g of Object.keys(GRP)){if(v.grupos[g])Object.assign(b.grupos[g],{p1:v.grupos[g].p1||'',p2:v.grupos[g].p2||'',p3:v.grupos[g].p3||''});}if(v.t8)b.t8=Array.isArray(v.t8)?[...v.t8]:Object.values(v.t8);['r32','r16','qf','sf'].forEach(k=>{if(v[k]){const a=Array.isArray(v[k])?v[k]:Object.values(v[k]);a.forEach((x,i)=>{if(i<b[k].length)b[k][i]=x||'';});}});if(v.fin)b.fin=v.fin;if(v.thr)b.thr=v.thr;return b;}
+
+function toCloud(){return{friends:S.friends,admin:S.adminR,picks:S.picks,thirds_bracket:S.thirds_bracket,_ts:Date.now()};}
+function fromCloud(data){if(!data)return;if(data.friends){const nf=Array.isArray(data.friends)?data.friends:Object.values(data.friends);for(const f of nf)if(!S.picks[f])S.picks[f]=ep();S.friends=nf;if(!S.friends.includes(S.cur))S.cur=S.friends[0];}if(data.admin)S.adminR=mergeA(data.admin);if(data.picks)for(const[f,v]of Object.entries(data.picks))if(f!==S.cur)S.picks[f]=mergeP(v);if(data.thirds_bracket){const arr=Array.isArray(data.thirds_bracket)?data.thirds_bracket:Object.values(data.thirds_bracket);S.thirds_bracket=arr.map(t=>typeof t==='string'?t:(Array.isArray(t)?t[0]:''));while(S.thirds_bracket.length<8)S.thirds_bracket.push('');}}
+
+function boot(data){
+  S.friends=(data.friends&&(Array.isArray(data.friends)?data.friends:Object.values(data.friends)))||['Amigo 1'];
+  S.cur=S.friends[0];S.picks={};
+  for(const f of S.friends)S.picks[f]=(data.picks&&data.picks[f])?mergeP(data.picks[f]):ep();
+  S.adminR=data.admin?mergeA(data.admin):eAdm();
+  S.thirds_bracket=data.thirds_bracket?(Array.isArray(data.thirds_bracket)?data.thirds_bracket:Object.values(data.thirds_bracket)).map(t=>typeof t==='string'?t:(Array.isArray(t)?t[0]:'')):Array(8).fill('');
+  S._ts=data._ts||0;loadBackups();render();startPolling();
+}
+
+// ══════════════════════════════════════════════════════
+// MUTATIONS
+// ══════════════════════════════════════════════════════
+function resetKO(p){p.r32=Array(16).fill('');p.r16=Array(8).fill('');p.qf=Array(4).fill('');p.sf=Array(2).fill('');p.fin='';p.thr='';}
+function clrChain(p,start,idx){const ch=['r16','qf','sf'];const ci=ch.indexOf(start);let i=idx;for(let c=ci;c<ch.length;c++){p[ch[c]][i]='';i=Math.floor(i/2);}p.fin='';p.thr='';}
+const pk=a=>a?S.adminR:S.picks[S.cur];
+const rc=(code,p)=>parseInt(code[0])===1?p.grupos[code[1]].p1:p.grupos[code[1]].p2;
+const allFilled=p=>Object.keys(GRP).every(g=>p.grupos[g].p1&&p.grupos[g].p2);
+function cleanT8(p){const taken=new Set(Object.keys(GRP).flatMap(g=>[p.grupos[g].p1,p.grupos[g].p2]).filter(Boolean));p.t8=(p.t8||[]).filter(t=>!taken.has(t));}
+function clickTeam(g,team,adm){const p=pk(adm),gr=p.grupos[g],rks=adm?['p1','p2','p3']:['p1','p2'];const cur=rks.find(r=>gr[r]===team);if(cur){const i=rks.indexOf(cur);for(let x=i;x<rks.length-1;x++)gr[rks[x]]=gr[rks[x+1]];gr[rks[rks.length-1]]='';}else{const nx=rks.find(r=>!gr[r]);if(nx)gr[nx]=team;}if(!adm)cleanT8(p);resetKO(p);scheduleSave();render();}
+function toggleT8(team){const p=S.picks[S.cur],idx=p.t8.indexOf(team);if(idx>=0)p.t8.splice(idx,1);else if(p.t8.length<8)p.t8.push(team);scheduleSave();render();}
+function toggleAdmT8(team){const idx=S.adminR.t8.indexOf(team);if(idx>=0)S.adminR.t8.splice(idx,1);else if(S.adminR.t8.length<8)S.adminR.t8.push(team);scheduleSave();render();}
+function setR32(mi,w,adm){const p=pk(adm);p.r32[mi]=w;clrChain(p,'r16',Math.floor(mi/2));scheduleSave();render();}
+function setR16(mi,w,adm){const p=pk(adm);p.r16[mi]=w;clrChain(p,'qf',Math.floor(mi/2));scheduleSave();render();}
+function setQF(mi,w,adm){const p=pk(adm);p.qf[mi]=w;clrChain(p,'sf',Math.floor(mi/2));scheduleSave();render();}
+function setSF(mi,w,adm){const p=pk(adm);p.sf[mi]=w;p.fin='';p.thr='';scheduleSave();render();}
+function setFin(w,adm){pk(adm).fin=w;scheduleSave();render();}
+function setThr(w,adm){pk(adm).thr=w;scheduleSave();render();}
+function setT3(mi,v){S.thirds_bracket[mi]=v;const ridx=R32_THIRDS[mi].i;S.adminR.r32[ridx]='';clrChain(S.adminR,'r16',Math.floor(ridx/2));scheduleSave();render();}
+
+// ══════════════════════════════════════════════════════
+// FRIENDS
+// ══════════════════════════════════════════════════════
+function confirmAdd(){const i=document.getElementById('ainp');if(!i)return;const n=i.value.trim();if(!n||S.friends.includes(n)){S.adding=false;render();return;}S.friends.push(n);S.picks[n]=ep();S.cur=n;scheduleSave();S.adding=false;render();}
+function cancelAdd(){S.adding=false;render();}
+function startEdit(n){S.editing=n;render();setTimeout(()=>{const i=document.getElementById('einp');if(i){i.focus();i.select();}},0);}
+function saveEdit(old){const i=document.getElementById('einp');const n=i?i.value.trim():'';if(n&&n!==old&&!S.friends.includes(n)){S.friends=S.friends.map(f=>f===old?n:f);S.picks[n]=S.picks[old];delete S.picks[old];if(S.cur===old)S.cur=n;scheduleSave();}S.editing=null;render();}
+function cancelEdit(){S.editing=null;render();}
+function removeFriend(n){if(S.friends.length<=1)return;if(!confirm('¿Eliminar a '+n+'?'))return;S.friends=S.friends.filter(f=>f!==n);delete S.picks[n];if(S.cur===n)S.cur=S.friends[0];scheduleSave();render();}
+function switchF(n){S.cur=n;render();}
+
+// ══════════════════════════════════════════════════════
+// MOBILE
+// ══════════════════════════════════════════════════════
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('mob-overlay').classList.add('on');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('mob-overlay').classList.remove('on');}
+
+// ══════════════════════════════════════════════════════
+// SYNC
+// ══════════════════════════════════════════════════════
+async function syncResults(){
+  if(S.sync==='loading')return;S.sync='loading';render();
+  const prompt=`Busca los resultados ACTUALES de la Copa Mundial FIFA 2026 (empieza 11 junio 2026, USA/Mexico/Canada). Devuelve SOLO JSON valido sin markdown:
+{"grupos":{"A":{"p1":"","p2":"","p3":""},"B":{"p1":"","p2":"","p3":""},"C":{"p1":"","p2":"","p3":""},"D":{"p1":"","p2":"","p3":""},"E":{"p1":"","p2":"","p3":""},"F":{"p1":"","p2":"","p3":""},"G":{"p1":"","p2":"","p3":""},"H":{"p1":"","p2":"","p3":""},"I":{"p1":"","p2":"","p3":""},"J":{"p1":"","p2":"","p3":""},"K":{"p1":"","p2":"","p3":""},"L":{"p1":"","p2":"","p3":""}},"t8":[],"thirds_bracket":[[],[],[],[]],"r32":["","","","","","","","","","","","","","","",""],"r16":["","","","","","","",""],"qf":["","","",""],"sf":["",""],"fin":"","thr":""}
+Usa "" para sin disputar. t8 = lista de los 8 mejores terceros que clasificaron. Nombres de: ${ALL.join(', ')}. SOLO el JSON.`;
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:prompt}]})});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const data=await resp.json();
+    const text=data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+    const m=text.match(/\{[\s\S]*\}/);if(!m)throw new Error('Sin resultados');
+    const r=JSON.parse(m[0]);
+    if(r.grupos)for(const[g,v]of Object.entries(r.grupos)){if(!GRP[g])continue;['p1','p2','p3'].forEach(k=>{if(v[k]&&ALL.includes(v[k]))S.adminR.grupos[g][k]=v[k];});}
+    if(Array.isArray(r.t8))S.adminR.t8=r.t8.filter(t=>ALL.includes(t)).slice(0,8);
+    [[r.r32,S.adminR.r32,16],[r.r16,S.adminR.r16,8],[r.qf,S.adminR.qf,4],[r.sf,S.adminR.sf,2]].forEach(([src,dst,n])=>{if(Array.isArray(src))for(let i=0;i<n&&i<src.length;i++)if(src[i]&&ALL.includes(src[i]))dst[i]=src[i];});
+    if(r.fin&&ALL.includes(r.fin))S.adminR.fin=r.fin;if(r.thr&&ALL.includes(r.thr))S.adminR.thr=r.thr;
+    scheduleSave();S.sync='ok';S.syncMsg='✓ Resultados actualizados';
+  }catch(e){S.sync='error';S.syncMsg='El torneo inicia el 11 de junio. ('+e.message+')';}
+  render();
+}
+
+// ══════════════════════════════════════════════════════
+// SCORING
+// ══════════════════════════════════════════════════════
+function calcPts(friend){
+  const p=S.picks[friend],r=S.adminR;let tot=0;const bd={grp:0,t8:0,r32:0,r16:0,qf:0,sf:0,fin:0,thr:0};
+  for(const g of Object.keys(GRP)){if(p.grupos[g].p1&&p.grupos[g].p1===r.grupos[g].p1){tot+=PTS.p1;bd.grp+=PTS.p1;}if(p.grupos[g].p2&&p.grupos[g].p2===r.grupos[g].p2){tot+=PTS.p2;bd.grp+=PTS.p2;}}
+  if(r.t8&&r.t8.length>0)for(const t of(p.t8||[])){if(r.t8.includes(t)){tot+=PTS.t8;bd.t8+=PTS.t8;}}
+  for(let i=0;i<16;i++)if(p.r32[i]&&p.r32[i]===r.r32[i]){tot+=PTS.r32;bd.r32+=PTS.r32;}
+  for(let i=0;i<8;i++) if(p.r16[i]&&p.r16[i]===r.r16[i]){tot+=PTS.r16;bd.r16+=PTS.r16;}
+  for(let i=0;i<4;i++) if(p.qf[i]&&p.qf[i]===r.qf[i]){tot+=PTS.qf;bd.qf+=PTS.qf;}
+  for(let i=0;i<2;i++) if(p.sf[i]&&p.sf[i]===r.sf[i]){tot+=PTS.sf;bd.sf+=PTS.sf;}
+  if(p.fin&&p.fin===r.fin){tot+=PTS.fin;bd.fin+=PTS.fin;}if(p.thr&&p.thr===r.thr){tot+=PTS.thr;bd.thr+=PTS.thr;}
+  return{tot,bd};
+}
+function maxPts(){return 12*(PTS.p1+PTS.p2)+8*PTS.t8+16*PTS.r32+8*PTS.r16+4*PTS.qf+2*PTS.sf+PTS.fin+PTS.thr;}
+function calcProgress(p){
+  const grpFilled=Object.keys(GRP).filter(g=>p.grupos[g].p1&&p.grupos[g].p2).length;
+  const t8cnt=(p.t8||[]).length;
+  const r32done=R32_FIXED.filter(({i})=>p.r32[i]).length+R32_THIRDS.filter(({i})=>p.r32[i]).length;
+  const r16done=p.r16.filter(Boolean).length;
+  const qfDone=p.qf.filter(Boolean).length;
+  const sfDone=p.sf.filter(Boolean).length;
+  const finDone=p.fin?1:0;
+  return{grpFilled,t8cnt,r32done,r16done,qfDone,sfDone,finDone};
+}
+
+// ══════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const js=s=>(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+function mc({lbl,t1,t2,w,dis,f1,f2}){return`<div class="mcard"><div class="mlbl">${lbl}</div><div class="mrow"><button class="mbtn${w&&w===t1&&!dis?' on':''}" ${dis||!f1?'disabled':''} onclick="${f1||''}">${esc(t1)||'?'}</button><div class="vsbdg">vs</div><button class="mbtn${w&&w===t2&&!dis?' on':''}" ${dis||!f2?'disabled':''} onclick="${f2||''}">${esc(t2)||'?'}</button></div></div>`;}
+
+const AVCOLORS=[['#2563eb','#fff'],['#7c3aed','#fff'],['#059669','#fff'],['#dc2626','#fff'],['#d97706','#fff'],['#0891b2','#fff'],['#be185d','#fff'],['#4f46e5','#fff']];
+function favt(f,i){const[bg,tx]=AVCOLORS[i%AVCOLORS.length];const init=(f||'?')[0].toUpperCase();return`<span class="favt" style="background:${bg};color:${tx}">${init}</span>`;}
+
+// ══════════════════════════════════════════════════════
+// RENDER: SIDEBAR
+// ══════════════════════════════════════════════════════
+const NAV_CFG={
+  dashboard:{id:'dashboard',lbl:'Dashboard',cls:'dash',icon:'<path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>'},
+  bracket:[
+    {id:'grupos',lbl:'Grupos',icon:'<path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zm6-6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>'},
+    {id:'r32',lbl:'16avos',icon:'<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>'},
+    {id:'r16',lbl:'Octavos',icon:'<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>'},
+    {id:'qf',lbl:'Cuartos',icon:'<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>'},
+    {id:'sf',lbl:'Semifinales',icon:'<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>'},
+    {id:'final',lbl:'Gran Final',icon:'<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>'},
+  ],
+  admin:{id:'admin',lbl:'Admin',cls:'adm',icon:'<path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>'},
+};
+const TAB_LABELS={dashboard:'Dashboard',grupos:'Grupos',r32:'16avos de Final',r16:'Octavos de Final',qf:'Cuartos de Final',sf:'Semifinales',final:'Gran Final',admin:'Panel Admin'};
+
+function ico(path){return`<svg class="sb-ico" viewBox="0 0 20 20" fill="currentColor"><${path}/></svg>`;}
+
+function renderNav(){
+  const el=document.getElementById('sb-nav');if(!el)return;
+  const d=NAV_CFG.dashboard;
+  let h=`<button class="sb-btn${S.tab===d.id?' on':''} ${d.cls}" onclick="S.tab='${d.id}';render()">${ico(d.icon)}${d.lbl}</button>`;
+  h+=`<span class="sb-label" style="margin-top:8px">Herramientas de administrador</span>`;
+  const a=NAV_CFG.admin;
+  h+=`<button class="sb-btn${S.tab===a.id?' on':''}${a.cls?' '+a.cls:''}" onclick="S.tab='${a.id}';render()">${ico(a.icon)}${a.lbl}</button>`;
+  el.innerHTML=h;
+}
+
+function renderSidebarProgress(){
+  const isPlayer=['grupos','r32','r16','qf','sf','final'].includes(S.tab);
+  const BRACKET_IDS=['grupos','r32','r16','qf','sf','final'];
+  const prog=document.getElementById('sb-progress');
+  const div=document.getElementById('sb-prog-divider');
+  if(!prog)return;
+  if(!isPlayer){prog.style.display='none';if(div)div.style.display='none';return;}
+  prog.style.display='block';if(div)div.style.display='block';
+  const p=S.picks[S.cur];
+  const{grpFilled,t8cnt,r32done,r16done,qfDone,sfDone,finDone}=calcProgress(p);
+  const grpOk=grpFilled===12,t8Ok=t8cnt===8,r32Ok=r32done===16,r16Ok=r16done===8,qfOk=qfDone===4,sfOk=sfDone===2,finOk=finDone===1;
+  const steps=[
+    {id:'grupos',lbl:'Grupos',done:grpOk,info:grpOk?'12/12':`${grpFilled}/12`,skip:false},
+    {id:'grupos',lbl:'8 Terceros',done:t8Ok,info:t8Ok?'8/8':`${t8cnt}/8`,skip:!grpOk},
+    {id:'r32',lbl:'16avos',done:r32Ok,info:r32Ok?'✓':`${r32done}/16`,skip:!t8Ok},
+    {id:'r16',lbl:'Octavos',done:r16Ok,info:r16Ok?'✓':`${r16done}/8`,skip:!r32Ok},
+    {id:'qf',lbl:'Cuartos',done:qfOk,info:qfOk?'✓':`${qfDone}/4`,skip:!r16Ok},
+    {id:'sf',lbl:'Semis',done:sfOk,info:sfOk?'✓':`${sfDone}/2`,skip:!qfOk},
+    {id:'final',lbl:'Final',done:finOk,info:finOk?'✓':'0/1',skip:!sfOk},
+  ];
+  const totalDone=[grpOk,t8Ok,r32Ok,r16Ok,qfOk,sfOk,finOk].filter(Boolean).length;
+  let h=`<span class="sbp-label">Progreso (${totalDone}/7)</span>`;
+  for(const s of steps){
+    const active=!s.done&&!s.skip;
+    const cls=s.done?'done':active?'active':s.skip?'skip':'';
+    h+=`<div class="sbp-row" onclick="S.tab='${s.id}';render()">
+      <div class="sbp-dot ${cls}"></div>
+      <span class="sbp-txt ${cls}">${s.lbl}</span>
+      <span class="sbp-val ${s.done?'done':''}">${s.info}</span>
+    </div>`;
+  }
+  prog.innerHTML=h;
+}
+
+function rFbar(){
+  let h='';
+  for(let fi=0;fi<S.friends.length;fi++){const f=S.friends[fi];
+    if(S.editing===f){h+=`<div class="ewrap"><input id="einp" class="einp" value="${esc(f)}" maxlength="20" onkeydown="if(event.key==='Enter')saveEdit('${js(f)}');if(event.key==='Escape')cancelEdit();" onblur="saveEdit('${js(f)}')"><span class="eok" onmousedown="event.preventDefault();saveEdit('${js(f)}')">✓</span><span class="exx" onmousedown="event.preventDefault();cancelEdit()">✕</span></div>`;}
+    else{
+      const on=f===S.cur&&!['admin','dashboard','instrucciones'].includes(S.tab);
+      h+=`<button class="ftab${on?' on':''}" onclick="switchF('${js(f)}')" title="${esc(f)}">${favt(f,fi)}<span class="fnm">${esc(f)}</span><span class="ftab-actions"><button class="fic" onclick="event.stopPropagation();startEdit('${js(f)}')">✏</button>${S.friends.length>1?`<button class="fic" onclick="event.stopPropagation();removeFriend('${js(f)}')">✕</button>`:''}</span></button>`;
+    }
+  }
+  if(S.adding){h+=`<div class="ewrap"><input id="ainp" class="einp" placeholder="Nombre..." maxlength="20" onkeydown="if(event.key==='Enter')confirmAdd();if(event.key==='Escape')cancelAdd();" autofocus><span class="eok" onmousedown="event.preventDefault();confirmAdd()">✓</span><span class="exx" onmousedown="event.preventDefault();cancelAdd()">✕</span></div>`;}
+  const el=document.getElementById('fbar');if(el)el.innerHTML=h;
+}
+
+// ══════════════════════════════════════════════════════
+// RENDER: SECTIONS
+// ══════════════════════════════════════════════════════
+function rGrupos(adm){
+  const p=pk(adm),a=adm?'true':'false';
+  let h='<div class="ggrid">';
+  for(const[g,teams]of Object.entries(GRP)){
+    const{p1,p2,p3}=p.grupos[g];const full=adm?(p1&&p2&&p3):(p1&&p2);
+    if(adm){
+      h+=`<div class="adm-g-card"><div class="ghdr"><span class="glbl">Grupo ${g}</span>${full?'<span class="gok">✓</span>':''}</div>`;
+      for(const t of teams){const rk=t===p1?1:t===p2?2:(t===p3?3:0);h+=`<div class="adm-trow${rk?` r${rk}`:''}" onclick="clickTeam('${g}','${js(t)}',true)"><span class="tnm">${esc(t)}</span>${rk?`<span class="rbdg b${rk}">${rk}°</span>`:'<span style="min-width:22px"></span>'}</div>`;}
+      h+='<div style="height:4px"></div></div>';
+    }else{
+      h+=`<div class="gcard"><div class="ghdr"><span class="glbl">Grupo ${g}</span>${full?'<span class="gok">✓</span>':''}</div><div class="gteams">`;
+      for(const t of teams){const rk=t===p1?1:t===p2?2:0;h+=`<div class="trow${rk?` r${rk}`:(full?' full':'')}" onclick="clickTeam('${g}','${js(t)}',false)"><span class="tnm">${esc(t)}</span>${rk?`<span class="rbdg b${rk}">${rk}°</span>`:'<span style="min-width:22px"></span>'}</div>`;}
+      h+='</div></div>';
+    }
+  }
+  h+='</div>';
+  if(!adm){
+    const filled=Object.keys(GRP).filter(g=>p.grupos[g].p1&&p.grupos[g].p2).length;
+    const pct=Math.round((filled/12)*100);
+    h+=`<div class="prog-wrap"><div class="prog-lbl"><span>Grupos completados</span><span>${filled}/12</span></div><div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div></div>`;
+    if(!allFilled(p)){h+=`<div class="t8-hint">Elige el <strong>1° y 2°</strong> de todos los grupos para seleccionar tus 8 mejores terceros</div>`;}
+    else{
+      const taken=new Set(Object.keys(GRP).flatMap(g=>[p.grupos[g].p1,p.grupos[g].p2]).filter(Boolean));
+      const sel=p.t8||[];const full8=sel.length>=8;
+      h+=`<div class="t8-section"><div class="t8-hdr"><div class="t8-ttl">¿Cuáles 8 terceros clasificarán?</div><div class="t8-counter${full8?' full':''}"><span>${sel.length}</span> / 8</div></div>
+        <div class="t8-sub">Elige los 8 que crees que clasificarán. <strong>${PTS.t8} pts por cada acierto.</strong></div>
+        <div class="t8-groups">`;
+      for(const[g,teams]of Object.entries(GRP)){const avail=teams.filter(t=>!taken.has(t));if(!avail.length)continue;h+=`<div class="t8-row"><div class="t8-glbl">Grp ${g}</div><div class="t8-chips">`;for(const t of avail){const isSel=sel.includes(t);const isDis=!isSel&&full8;h+=`<span class="t8-chip${isSel?' sel':''}${isDis?' dis':''}" onclick="${isDis?'':'toggleT8(\''+js(t)+'\')'}">${esc(t)}</span>`;}h+='</div></div>';}
+      h+='</div></div>';
+    }
+  }
+  return h;
+}
+
+function rAdminT8(){
+  const allT3=Object.keys(GRP).map(g=>({g,t:S.adminR.grupos[g].p3})).filter(x=>x.t);
+  if(!allT3.length)return`<div class="t8-hint">Completa primero los 3ros lugares en la sub-pestaña Grupos.</div>`;
+  const sel=S.adminR.t8||[];const full8=sel.length>=8;
+  let h=`<div class="t8-section"><div class="t8-hdr"><div class="t8-ttl">Los 8 mejores terceros reales</div><div class="t8-counter${full8?' full':''}"><span>${sel.length}</span> / 8</div></div><div class="t8-sub">Marca exactamente los 8 terceros que realmente clasificaron.</div><div class="t8-chips" style="flex-wrap:wrap;gap:5px">`;
+  for(const{g,t}of allT3){const isSel=sel.includes(t);const isDis=!isSel&&full8;h+=`<span class="t8-chip${isSel?' sel':''}${isDis?' dis':''}" onclick="${isDis?'':'toggleAdmT8(\''+js(t)+'\')'}">${esc(t)} <span style="font-size:10px;opacity:.6">G.${g}</span></span>`;}
+  return h+'</div></div>';
+}
+
+function rR32(adm){
+  const p=pk(adm),a=adm?'true':'false';
+  let h=`<div class="phase"><div class="phdr">Partidos de grupos <span class="ptag">${PTS.r32} pts c/u</span></div><div class="mgrid">`;
+  for(const{i,c1,c2}of R32_FIXED){const t1=rc(c1,p)||'',t2=rc(c2,p)||'';h+=mc({lbl:`${c1} vs ${c2}`,t1:t1||c1,t2:t2||c2,w:p.r32[i],dis:!t1||!t2,f1:t1?`setR32(${i},'${js(t1)}',${a})`:'',f2:t2?`setR32(${i},'${js(t2)}',${a})`:''});}
+  h+=`</div></div><div class="phase"><div class="phdr">Mejores Terceros <span class="ptag">${PTS.r32} pts c/u</span></div>`;
+  if(!adm){
+    const t8=p.t8||[];
+    if(t8.length<8){h+=`<div class="warn-hint">Primero selecciona tus <strong>8 mejores terceros</strong> en la sección Grupos.</div>`;}
+    else{h+=`<div class="mgrid">`;for(let ti=0;ti<8;ti++){const{i,c1}=R32_THIRDS[ti];const t1=rc(c1,p)||'';const t2=t8[ti]||'';h+=mc({lbl:`${c1} vs 3ro #${ti+1}`,t1:t1||c1,t2:t2||'Por definir',w:p.r32[i],dis:!t1||!t2,f1:t1&&t2?`setR32(${i},'${js(t1)}',false)`:'',f2:t1&&t2?`setR32(${i},'${js(t2)}',false)`:''});}h+=`</div>`;}
+  }else{
+    const t3s=[...new Set(Object.keys(GRP).map(g=>S.adminR.grupos[g].p3).filter(Boolean))];
+    h+=`<div class="mgrid">`;
+    for(let ti=0;ti<8;ti++){
+      const{i,c1}=R32_THIRDS[ti];const t1=rc(c1,p)||'';const t2=S.thirds_bracket[ti]||'';
+      const o=t3s.map(t=>`<option value="${esc(t)}"${t2===t?' selected':''}>${esc(t)}</option>`).join('');
+      h+=`<div class="mcard"><div class="mlbl">${c1} (${esc(t1)||'?'}) vs mejor 3ro</div><div class="t3row"><select onchange="setT3(${ti},this.value)"><option value="">— Elige —</option>${o}</select></div><div class="mrow"><button class="mbtn${p.r32[i]&&p.r32[i]===t1&&t1?' on':''}" ${!t1?'disabled':''} onclick="${t1&&t2?`setR32(${i},'${js(t1)}',true)`:''}"> ${esc(t1)||c1}</button><div class="vsbdg">vs</div><button class="mbtn${p.r32[i]&&p.r32[i]===t2&&t2?' on':''}" ${!t2?'disabled':''} onclick="${t1&&t2?`setR32(${i},'${js(t2)}',true)`:''}"> ${esc(t2)||'?'}</button></div></div>`;
+    }
+    h+=`</div>`;
+  }
+  return h+'</div>';
+}
+
+function rKO(round,adm){
+  const p=pk(adm),a=adm?'true':'false';
+  const cfg={r16:{lbl:'Octavos de Final',br:R16B,src:p.r32,self:p.r16,fn:'setR16',pts:PTS.r16,n:8},qf:{lbl:'Cuartos de Final',br:QFB,src:p.r16,self:p.qf,fn:'setQF',pts:PTS.qf,n:4},sf:{lbl:'Semifinales',br:SFB,src:p.qf,self:p.sf,fn:'setSF',pts:PTS.sf,n:2}}[round];
+  let h=`<div class="phase"><div class="phdr">${cfg.lbl} <span class="ptag">${cfg.pts} pts c/u</span></div><div class="mgrid">`;
+  for(let i=0;i<cfg.n;i++){const[s1,s2]=cfg.br[i];const t1=cfg.src[s1]||'',t2=cfg.src[s2]||'';h+=mc({lbl:`Partido ${i+1}`,t1:t1||'Por definir',t2:t2||'Por definir',w:cfg.self[i]||'',dis:!t1||!t2,f1:t1?`${cfg.fn}(${i},'${js(t1)}',${a})`:'',f2:t2?`${cfg.fn}(${i},'${js(t2)}',${a})`:''});}
+  return h+'</div></div>';
+}
+
+function rFinal(adm){
+  const p=pk(adm),a=adm?'true':'false';
+  const sf1=p.sf[0]||'',sf2=p.sf[1]||'',fw=p.fin;
+  const l0=[p.qf[0]||'',p.qf[1]||''].find(t=>t&&t!==p.sf[0])||'';
+  const l1=[p.qf[2]||'',p.qf[3]||''].find(t=>t&&t!==p.sf[1])||'';
+  return`<div class="fw">
+    <div class="fc"><div class="fttl">🏆 Gran Final · ${PTS.fin} pts al campeón</div>
+      <div class="mrow"><button class="mbtn${fw&&fw===sf1?' on':''}" ${!sf1?'disabled':''} onclick="${sf1?`setFin('${js(sf1)}',${a})`:''}"> ${esc(sf1)||'Por definir'}</button><div class="vsbdg">vs</div><button class="mbtn${fw&&fw===sf2?' on':''}" ${!sf2?'disabled':''} onclick="${sf2?`setFin('${js(sf2)}',${a})`:''}"> ${esc(sf2)||'Por definir'}</button></div>
+      ${fw?`<div class="champ">🏆 ${esc(fw)}</div>`:''}
+    </div>
+    <div class="mcard"><div class="mlbl">🥉 3er y 4to Lugar · ${PTS.thr} pts</div>
+      <div class="mrow"><button class="mbtn${p.thr&&p.thr===l0?' on':''}" ${!l0?'disabled':''} onclick="${l0?`setThr('${js(l0)}',${a})`:''}"> ${esc(l0)||'Por definir'}</button><div class="vsbdg">vs</div><button class="mbtn${p.thr&&p.thr===l1?' on':''}" ${!l1?'disabled':''} onclick="${l1?`setThr('${js(l1)}',${a})`:''}"> ${esc(l1)||'Por definir'}</button></div>
+      ${p.thr?`<div style="text-align:center;margin-top:10px;font-size:12px;color:var(--mt)">3er lugar: <strong>${esc(p.thr)}</strong></div>`:''}
+    </div>
+  </div>`;
+}
+
+function getProximosPartidos(){
+  const r=S.adminR;const matches=[];
+  // r32 fixed
+  for(const{i,c1,c2}of R32_FIXED){const t1=rc(c1,r)||'',t2=rc(c2,r)||'';if(t1&&t2&&!r.r32[i])matches.push({t1,t2,phase:'16avos',lbl:`${c1} vs ${c2}`});}
+  // r32 thirds
+  for(let ti=0;ti<8;ti++){const{i,c1}=R32_THIRDS[ti];const t1=rc(c1,r)||'',t2=S.thirds_bracket[ti]||'';if(t1&&t2&&!r.r32[i])matches.push({t1,t2,phase:'16avos',lbl:`${c1} vs 3ro`});}
+  // r16
+  for(let i=0;i<8;i++){const[s1,s2]=R16B[i];const t1=r.r32[s1]||'',t2=r.r32[s2]||'';if(t1&&t2&&!r.r16[i])matches.push({t1,t2,phase:'Octavos',lbl:`Partido ${i+1}`});}
+  // qf
+  for(let i=0;i<4;i++){const[s1,s2]=QFB[i];const t1=r.r16[s1]||'',t2=r.r16[s2]||'';if(t1&&t2&&!r.qf[i])matches.push({t1,t2,phase:'Cuartos',lbl:`Partido ${i+1}`});}
+  // sf
+  for(let i=0;i<2;i++){const[s1,s2]=SFB[i];const t1=r.qf[s1]||'',t2=r.qf[s2]||'';if(t1&&t2&&!r.sf[i])matches.push({t1,t2,phase:'Semifinal',lbl:`SF ${i+1}`});}
+  // final
+  if(r.sf[0]&&r.sf[1]&&!r.fin)matches.push({t1:r.sf[0],t2:r.sf[1],phase:'Final',lbl:'Gran Final'});
+  return matches.slice(0,4);
+}
+
+function rDashboard(){
+  const hasR=Object.values(S.adminR.grupos).some(g=>g.p1);
+  const ranked=S.friends.map(f=>{const{tot,bd}=calcPts(f);return{n:f,tot,bd};}).sort((a,b)=>b.tot-a.tot);
+  const mx=maxPts();
+  let h='';
+
+  // ── Próximos partidos ─────────────────────────────
+  const proximos=getProximosPartidos();
+  h+=`<div style="margin-bottom:16px">`;
+  h+=`<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--mt);margin-bottom:10px">Próximos partidos</div>`;
+  if(proximos.length===0){
+    h+=`<div class="card" style="padding:18px;text-align:center;color:var(--mt);font-size:13px">
+      <div style="font-size:28px;margin-bottom:8px">⏳</div>
+      ${hasR?'No hay partidos próximos definidos aún — el admin puede sincronizar resultados.':'El torneo inicia el 11 Jun 2026. El admin puede sincronizar resultados desde el panel.'}
+    </div>`;
+  }else{
+    h+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">`;
+    for(const m of proximos){
+      h+=`<div class="card" style="padding:12px 14px">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--ac);margin-bottom:8px">${m.phase}</div>
+        <div style="display:flex;align-items:center;gap:8px;justify-content:space-between">
+          <span style="font-size:12px;font-weight:700;color:var(--tx);flex:1;text-align:center">${esc(m.t1)}</span>
+          <span style="font-size:10px;font-weight:800;color:var(--mt2);flex-shrink:0">vs</span>
+          <span style="font-size:12px;font-weight:700;color:var(--tx);flex:1;text-align:center">${esc(m.t2)}</span>
+        </div>
+      </div>`;
+    }
+    h+=`</div>`;
+  }
+  h+=`</div>`;
+
+  // ── Leaderboard ───────────────────────────────────
+  h+=`<div class="lb"><div class="lbhdr"><span class="lbhtitle">Clasificación</span><span class="lbhsub">${S.friends.length} participantes</span></div>`;
+  const medals=['🥇','🥈','🥉'];
+  ranked.forEach((s,i)=>{
+    const pct=mx>0?Math.round((s.tot/mx)*100):0;
+    const chips=[s.bd.grp?`Grupos: ${s.bd.grp}`:null,s.bd.t8?`3eros: ${s.bd.t8}`:null,s.bd.r32?`16avos: ${s.bd.r32}`:null,s.bd.r16?`Oct: ${s.bd.r16}`:null,s.bd.qf?`1/4: ${s.bd.qf}`:null,s.bd.sf?`SF: ${s.bd.sf}`:null,s.bd.fin?`Final: ${s.bd.fin}`:null].filter(Boolean).join(' · ');
+    h+=`<div class="lbrow${s.n===S.cur?' me':''}">
+      <div class="lbrnk">${medals[i]||i+1}</div>
+      <div style="flex:1;min-width:0">
+        <div class="lbnm">${esc(s.n)}${s.n===S.cur?' <span style="font-size:10px;color:var(--ac);font-weight:700;margin-left:4px">(tú)</span>':''}</div>
+        ${chips?`<div class="lbdet">${chips}</div>`:(hasR?'<div class="lbdet">Sin aciertos aún</div>':'')}
+        ${hasR?`<div class="lbbar"><div class="lbbar-fill" style="width:${pct}%"></div></div>`:''}
+      </div>
+      <div class="lbpts">${hasR?s.tot:'—'}</div>
+    </div>`;
+  });
+  return h+'</div>';
+}
+
+function rInstrucciones(){
+  return`<div class="ins-wrap">
+    <div class="ins-card"><div class="ins-step"><div class="ins-num">1</div><div><div class="ins-title">Agrega tu nombre</div><div class="ins-desc">Toca <strong>+ Agregar</strong> en la barra lateral, escribe tu nombre y presiona Enter.</div></div></div></div>
+    <div class="ins-card"><div class="ins-step"><div class="ins-num">2</div><div><div class="ins-title">Elige 1° y 2° en cada grupo</div><div class="ins-desc">En <strong>Grupos</strong>, toca el equipo que queda <strong>primero</strong> (dorado) y luego el <strong>segundo</strong> (gris). Hazlo en los 12 grupos.</div></div></div></div>
+    <div class="ins-card"><div class="ins-step"><div class="ins-num">3</div><div><div class="ins-title">Elige tus 8 mejores terceros</div><div class="ins-desc">Cuando termines todos los grupos, selecciona exactamente <strong>8 equipos</strong> que crees clasificarán como mejores terceros.</div></div></div></div>
+    <div class="ins-card"><div class="ins-step"><div class="ins-num">4</div><div><div class="ins-title">Avanza por el bracket</div><div class="ins-desc">En <strong>16avos → Octavos → Cuartos → Semis → Final</strong>, elige quién gana cada partido. Se llenan automáticamente con tus picks.</div></div></div></div>
+    <div class="ins-card">
+      <div class="ins-title" style="margin-bottom:12px">Sistema de puntuación</div>
+      <table class="pts-table"><tr><th>Predicción</th><th style="text-align:right">Puntos</th></tr>
+        <tr><td>1° lugar de grupo correcto</td><td class="pts-val">${PTS.p1}</td></tr>
+        <tr><td>2° lugar de grupo correcto</td><td class="pts-val">${PTS.p2}</td></tr>
+        <tr><td>Cada mejor tercero correcto</td><td class="pts-val">${PTS.t8}</td></tr>
+        <tr><td>Ganador de 16avos</td><td class="pts-val">${PTS.r32}</td></tr>
+        <tr><td>Ganador de Octavos</td><td class="pts-val">${PTS.r16}</td></tr>
+        <tr><td>Ganador de Cuartos</td><td class="pts-val">${PTS.qf}</td></tr>
+        <tr><td>Ganador de Semis</td><td class="pts-val">${PTS.sf}</td></tr>
+        <tr><td>Campeón correcto</td><td class="pts-val">${PTS.fin}</td></tr>
+        <tr><td>3er lugar correcto</td><td class="pts-val">${PTS.thr}</td></tr>
+      </table>
+    </div>
+    <div class="ins-card"><div class="ins-step"><div class="ins-num" style="background:var(--gn)">📤</div><div><div class="ins-title">Compartir con amigos</div><div class="ins-desc">Manda el <strong>link de esta página</strong> por WhatsApp. Tus amigos lo abren, agregan su nombre y ya llenan su quiniela. Todo se sincroniza en tiempo real.</div></div></div></div>
+  </div>`;
+}
+
+function rAdmin(){
+  const subs=['grupos','terceros','r32','r16','qf','sf','final'];
+  let stHtml='';
+  if(S.sync==='loading')stHtml=`<span class="syncst"><span class="spin"></span> Buscando resultados...</span>`;
+  else if(S.sync==='ok')stHtml=`<span class="syncst ok">${esc(S.syncMsg)}</span>`;
+  else if(S.sync==='error')stHtml=`<span class="syncst err">${esc(S.syncMsg)}</span>`;
+  let bkHtml='';
+  if(BACKUPS.length>0){
+    bkHtml=`<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--mt);margin-bottom:7px">Backups guardados</div><div style="display:flex;flex-wrap:wrap;gap:6px">`;
+    BACKUPS.forEach((b,i)=>{const d=new Date(b.ts);const lbl=d.toLocaleDateString('es-MX',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});bkHtml+=`<div class="bk-item"><span class="bk-lbl">${b.label} · ${lbl}</span><button class="bk-restore" onclick="restoreBackup(${i})">Restaurar</button></div>`;});
+    bkHtml+=`</div></div>`;
+  }
+  let h=`<div class="admnotice">⚙️ <strong>Panel Admin</strong> — Registra los resultados reales. Los puntos de todos se actualizan automáticamente.</div>`;
+  h+=bkHtml;
+  h+=`<div class="syncrow"><button class="syncbtn" onclick="syncResults()" ${S.sync==='loading'?'disabled':''}>${S.sync==='loading'?'<span class="spin"></span>':'🔄'} Sincronizar con IA</button>${stHtml}<button class="bkp-btn" onclick="saveBackup('Pre-sync')" title="Guardar backup">💾 Backup</button></div>`;
+  h+=`<div class="admsubs">`;
+  for(const s of subs)h+=`<button class="adms${S.sub===s?' on':''}" onclick="S.sub='${s}';render()">${s==='terceros'?'8 Terceros':s}</button>`;
+  h+=`</div>`;
+  if(S.sub==='grupos')        h+=rGrupos(true);
+  else if(S.sub==='terceros') h+=rAdminT8();
+  else if(S.sub==='r32')      h+=rR32(true);
+  else if(S.sub==='r16')      h+=rKO('r16',true);
+  else if(S.sub==='qf')       h+=rKO('qf',true);
+  else if(S.sub==='sf')       h+=rKO('sf',true);
+  else if(S.sub==='final')    h+=rFinal(true);
+  return h;
+}
+
+// ══════════════════════════════════════════════════════
+// FLOAT NEXT
+// ══════════════════════════════════════════════════════
+let _floatNextAction=null;
+function floatNextClick(){if(_floatNextAction)_floatNextAction();}
+function renderFloatNext(){
+  const playerTabs=['grupos','r32','r16','qf','sf','final'];
+  const el=document.getElementById('float-next');
+  if(!el)return;
+  if(!playerTabs.includes(S.tab)){el.style.display='none';_floatNextAction=null;return;}
+  const p=S.picks[S.cur];
+  const{grpFilled,t8cnt,r32done,r16done,qfDone,sfDone,finDone}=calcProgress(p);
+  let txt='',btnLbl='',action=null;
+  if(S.tab==='grupos'){
+    if(grpFilled<12){txt=`Completa ${12-grpFilled} grupo${12-grpFilled!==1?'s':''} más`;btnLbl='';action=null;}
+    else if(t8cnt<8){txt=`Elige ${8-t8cnt} mejor${8-t8cnt!==1?'es':''} tercero${8-t8cnt!==1?'s':''} más`;btnLbl='';action=null;}
+    else{txt='¡Grupos y terceros listos!';btnLbl='Ir a 16avos →';action=()=>{S.tab='r32';render();};}
+  }else if(S.tab==='r32'){
+    if(r32done<16){txt=`Faltan ${16-r32done} partido${16-r32done!==1?'s':''} en 16avos`;action=null;}
+    else{txt='¡16avos completados!';btnLbl='Ir a Octavos →';action=()=>{S.tab='r16';render();};}
+  }else if(S.tab==='r16'){
+    if(r16done<8){txt=`Faltan ${8-r16done} partido${8-r16done!==1?'s':''} en Octavos`;action=null;}
+    else{txt='¡Octavos completados!';btnLbl='Ir a Cuartos →';action=()=>{S.tab='qf';render();};}
+  }else if(S.tab==='qf'){
+    if(qfDone<4){txt=`Faltan ${4-qfDone} partido${4-qfDone!==1?'s':''} en Cuartos`;action=null;}
+    else{txt='¡Cuartos completados!';btnLbl='Ir a Semis →';action=()=>{S.tab='sf';render();};}
+  }else if(S.tab==='sf'){
+    if(sfDone<2){txt=`Faltan ${2-sfDone} semifinal${sfDone===1?'':'es'}`;action=null;}
+    else{txt='¡Semis completadas!';btnLbl='Ir a la Final →';action=()=>{S.tab='final';render();};}
+  }else if(S.tab==='final'){
+    if(!finDone){txt='Elige al campeón del Mundial';action=null;}
+    else{txt='🏆 ¡Quiniela completa!';btnLbl='Ver Dashboard →';action=()=>{S.tab='dashboard';render();};}
+  }
+  _floatNextAction=action;
+  const txtEl=el.querySelector('.fn-txt');
+  const btnEl=el.querySelector('.fn-btn');
+  if(!txt){el.style.display='none';return;}
+  el.style.display='block';
+  el.style.background=action?'var(--gnl)':'var(--card)';
+  el.style.borderTopColor=action?'var(--gn)':'var(--bd)';
+  txtEl.innerHTML=`<span style="color:${action?'var(--gnd)':'var(--am)'}">${txt}</span>`;
+  if(action){btnEl.style.display='inline-flex';btnEl.textContent=btnLbl;}
+  else{btnEl.style.display='none';}
+}
+
+// ══════════════════════════════════════════════════════
+// MAIN RENDER
+// ══════════════════════════════════════════════════════
+function renderContent(){
+  let c='';
+  if(S.tab==='grupos')            c=rGrupos(false);
+  else if(S.tab==='r32')          c=rR32(false);
+  else if(S.tab==='r16')          c=rKO('r16',false);
+  else if(S.tab==='qf')           c=rKO('qf',false);
+  else if(S.tab==='sf')           c=rKO('sf',false);
+  else if(S.tab==='final')        c=rFinal(false);
+  else if(S.tab==='dashboard')    c=rDashboard();
+  else if(S.tab==='admin')        c=rAdmin();
+  const el=document.getElementById('content');if(el)el.innerHTML=c;
+  const tb=document.getElementById('tb-title');if(tb)tb.textContent=TAB_LABELS[S.tab]||'';
+}
+
+function render(){
+  rFbar();
+  renderNav();
+  renderSidebarProgress();
+  renderFloatNext();
+  renderContent();
+  if(S.adding)setTimeout(()=>{const i=document.getElementById('ainp');if(i)i.focus();},0);
+  if(S.editing)setTimeout(()=>{const i=document.getElementById('einp');if(i){i.focus();i.select();}},0);
+}
+</script>
+</body>
+</html>
