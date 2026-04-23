@@ -40,6 +40,25 @@
 
 /* ── RESET ───────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── WELCOME MODAL ───────────────────────────────────── */
+#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+#modal-overlay.on{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:28px 26px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:modalIn .25s cubic-bezier(.4,0,.2,1)}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}
+.modal-ico{font-size:36px;text-align:center;margin-bottom:12px}
+.modal-ttl{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;text-align:center;margin-bottom:6px;letter-spacing:-.3px}
+.modal-sub{font-size:13px;color:var(--mt);text-align:center;margin-bottom:20px;line-height:1.6}
+.modal-field{margin-bottom:12px}
+.modal-field label{display:block;font-size:12px;font-weight:600;color:var(--tx);margin-bottom:5px}
+.modal-field input{width:100%;padding:11px 13px;border:1.5px solid var(--bd);border-radius:var(--r);font-size:14px;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);outline:none;transition:border-color .15s}
+.modal-field input:focus{border-color:var(--ac)}
+.modal-err{font-size:12px;color:var(--rd);margin-bottom:10px;padding:7px 11px;background:#fef2f2;border-radius:6px;display:none}
+.modal-btn{width:100%;padding:12px;border:none;border-radius:var(--r);background:var(--ac);color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;transition:background .15s;margin-top:4px}
+.modal-btn:hover{background:var(--acd)}
+.modal-btn.secondary{background:var(--bg);color:var(--tx);border:1.5px solid var(--bd);margin-top:8px}
+.modal-btn.secondary:hover{border-color:var(--ac);color:var(--ac)}
+.modal-welcome-name{font-family:'Outfit',sans-serif;font-size:22px;font-weight:800;color:var(--ac)}
 html,body{height:100%}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;-webkit-font-smoothing:antialiased;display:flex;min-height:100vh;transition:background var(--transition),color var(--transition)}
 
@@ -438,7 +457,8 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 <!-- Float next -->
 <div id="float-next">
   <div class="fn-inner">
-    <div class="fn-txt"></div>
+    <button class="fn-back" id="fn-back-btn" onclick="floatBackClick()" style="display:none;padding:9px 14px;border:1.5px solid var(--bd);border-radius:9px;background:var(--card);cursor:pointer;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--mt);transition:all .15s;white-space:nowrap">← Regresar</button>
+    <div class="fn-txt" style="flex:1"></div>
     <button class="fn-btn" onclick="floatNextClick()"></button>
   </div>
 </div>
@@ -526,12 +546,162 @@ async function jbSet(data){const r=await fetch(`https://api.jsonbin.io/v3/b/${CF
 function scheduleSave(){_dirty=true;clearTimeout(_saveTimer);_saveTimer=setTimeout(async()=>{if(!_dirty)return;_dirty=false;try{await jbSet(toCloud());}catch(e){console.warn('Save failed',e);}},600);}
 function startPolling(){clearInterval(_pollTimer);_pollTimer=setInterval(async()=>{try{const r=await jbGet();if(r&&r._ts&&r._ts!==S._ts){fromCloud(r);S._ts=r._ts;render();}}catch{}},10000);}
 
-jbGet().then(data=>{boot(data||{});}).catch(()=>{boot({});});
+// ═══ PLAYER IDENTITY & PASSWORD ═════════════════════
+// Each device stores: {name, passwordHash}
+// Passwords stored as simple hash in jsonbin alongside picks
+
+function hashPin(pin){
+  // Simple deterministic hash — good enough for friendly use
+  let h=0;for(let i=0;i<pin.length;i++){h=(Math.imul(31,h)+pin.charCodeAt(i))|0;}
+  return h.toString(36);
+}
+
+let ME={name:'',pin:''}; // local identity
+
+function loadMe(){
+  try{const s=localStorage.getItem('wc26_me');if(s)ME=JSON.parse(s);}catch{}
+}
+function saveMe(){
+  try{localStorage.setItem('wc26_me',JSON.stringify(ME));}catch{}
+}
+
+function showModal(html){
+  document.getElementById('modal-box').innerHTML=html;
+  document.getElementById('modal-overlay').classList.add('on');
+  setTimeout(()=>{const f=document.querySelector('#modal-box input');if(f)f.focus();},100);
+}
+function closeModal(){
+  document.getElementById('modal-overlay').classList.remove('on');
+}
+
+function showWelcomeNew(){
+  showModal(`
+    <div class="modal-ico">🌎</div>
+    <div class="modal-ttl">¡Bienvenido a la Quiniela!</div>
+    <div class="modal-sub">Crea tu perfil para guardar tus predicciones</div>
+    <div class="modal-field"><label>Tu nombre</label>
+      <input id="mi-name" type="text" placeholder="Ej: Carlos, Cris..." maxlength="20"
+        onkeydown="if(event.key==='Enter')document.getElementById('mi-pin').focus()">
+    </div>
+    <div class="modal-field"><label>Tu PIN (4 dígitos)</label>
+      <input id="mi-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
+        onkeydown="if(event.key==='Enter')submitNewProfile()">
+    </div>
+    <div id="modal-err" class="modal-err"></div>
+    <button class="modal-btn" onclick="submitNewProfile()">Crear perfil y entrar →</button>
+  `);
+}
+
+function showWelcomeBack(name){
+  showModal(`
+    <div class="modal-ico">👋</div>
+    <div class="modal-ttl">¡Hola, <span class="modal-welcome-name">${esc(name)}</span>!</div>
+    <div class="modal-sub">Ingresa tu PIN para editar tu quiniela</div>
+    <div class="modal-field"><label>Tu PIN</label>
+      <input id="mi-pin-back" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
+        onkeydown="if(event.key==='Enter')submitPinBack()">
+    </div>
+    <div id="modal-err" class="modal-err"></div>
+    <button class="modal-btn" onclick="submitPinBack()">Entrar →</button>
+    <button class="modal-btn secondary" onclick="closeModal();S.cur=S.friends[0]||'';render()">Solo ver (sin editar)</button>
+  `);
+}
+
+function showSwitchPlayer(name){
+  // Another player's tab was clicked — ask for their PIN
+  showModal(`
+    <div class="modal-ico">🔒</div>
+    <div class="modal-ttl">${esc(name)}</div>
+    <div class="modal-sub">Ingresa el PIN de ${esc(name)} para editar su quiniela</div>
+    <div class="modal-field"><label>PIN de ${esc(name)}</label>
+      <input id="mi-pin-sw" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
+        onkeydown="if(event.key==='Enter')submitPinSwitch('${js(name)}')">
+    </div>
+    <div id="modal-err" class="modal-err"></div>
+    <button class="modal-btn" onclick="submitPinSwitch('${js(name)}')">Entrar →</button>
+    <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
+  `);
+  setTimeout(()=>{const f=document.getElementById('mi-pin-sw');if(f)f.focus();},100);
+}
+
+function submitNewProfile(){
+  const name=(document.getElementById('mi-name').value||'').trim();
+  const pin=(document.getElementById('mi-pin').value||'').trim();
+  const err=document.getElementById('modal-err');
+  if(!name){err.textContent='Escribe tu nombre';err.style.display='block';return;}
+  if(pin.length!==4||!/^\d{4}$/.test(pin)){err.textContent='El PIN debe ser de 4 dígitos';err.style.display='block';return;}
+  if(S.friends.includes(name)){err.textContent='Ese nombre ya existe, elige otro';err.style.display='block';return;}
+  ME={name,pin:hashPin(pin)};saveMe();
+  // Add to friends
+  S.friends.push(name);S.picks[name]=ep();S.cur=name;
+  scheduleSave();closeModal();render();
+}
+
+function submitPinBack(){
+  const pin=(document.getElementById('mi-pin-back').value||'').trim();
+  const err=document.getElementById('modal-err');
+  if(hashPin(pin)!==ME.pin){err.textContent='PIN incorrecto';err.style.display='block';return;}
+  closeModal();render();
+}
+
+function submitPinSwitch(name){
+  const pin=(document.getElementById('mi-pin-sw').value||'').trim();
+  const err=document.getElementById('modal-err');
+  // Get stored pin for this player
+  const stored=S.playerPins&&S.playerPins[name];
+  if(!stored||hashPin(pin)!==stored){err.textContent='PIN incorrecto';err.style.display='block';return;}
+  // Temporarily allow editing as this player
+  ME={name,pin:stored};saveMe();
+  S.cur=name;closeModal();render();
+}
+
+function switchFProtected(name){
+  // If clicking own tab — switch freely
+  if(name===ME.name){S.cur=name;render();return;}
+  // If clicking another player's tab — ask PIN
+  showSwitchPlayer(name);
+}
+
+// Boot flow
+loadMe();
+jbGet().then(data=>{
+  bootWithIdentity(data||{});
+}).catch(()=>{bootWithIdentity({});});
+
+function bootWithIdentity(data){
+  // Standard boot first
+  S.friends=(data.friends&&(Array.isArray(data.friends)?data.friends:Object.values(data.friends)))||[];
+  S.picks={};
+  for(const f of S.friends)S.picks[f]=(data.picks&&data.picks[f])?mergeP(data.picks[f]):ep();
+  S.adminR=data.admin?mergeA(data.admin):eAdm();
+  S.thirds_bracket=data.thirds_bracket?(Array.isArray(data.thirds_bracket)?data.thirds_bracket:Object.values(data.thirds_bracket)).map(t=>typeof t==='string'?t:(Array.isArray(t)?t[0]:'')):Array(8).fill('');
+  S.playerPins=data.playerPins||{};
+  S._ts=data._ts||0;loadBackups();
+
+  if(ME.name&&S.friends.includes(ME.name)){
+    // Returning user — show PIN prompt
+    S.cur=ME.name;
+    render();
+    showWelcomeBack(ME.name);
+  } else if(ME.name&&!S.friends.includes(ME.name)){
+    // Had a name but was removed — start fresh
+    ME={name:'',pin:''};saveMe();
+    S.cur=S.friends[0]||'';
+    render();
+    showWelcomeNew();
+  } else {
+    // Brand new visitor
+    S.cur=S.friends[0]||'';
+    render();
+    showWelcomeNew();
+  }
+  startPolling();
+}
 
 // ══════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════
-let S={friends:[],cur:null,tab:'grupos',sub:'grupos',picks:{},adminR:null,thirds_bracket:Array(8).fill(''),editing:null,adding:false,sync:'idle',syncMsg:'',_ts:0};
+let S={friends:[],cur:null,tab:'grupos',sub:'grupos',picks:{},adminR:null,thirds_bracket:Array(8).fill(''),playerPins:{},editing:null,adding:false,sync:'idle',syncMsg:'',_ts:0};
 
 function ep(){return{grupos:Object.fromEntries(Object.keys(GRP).map(g=>[g,{p1:'',p2:''}])),t8:[],r32:Array(16).fill(''),r16:Array(8).fill(''),qf:Array(4).fill(''),sf:Array(2).fill(''),fin:'',thr:''};}
 function eAdm(){return{grupos:Object.fromEntries(Object.keys(GRP).map(g=>[g,{p1:'',p2:'',p3:''}])),t8:[],r32:Array(16).fill(''),r16:Array(8).fill(''),qf:Array(4).fill(''),sf:Array(2).fill(''),fin:'',thr:''};}
@@ -539,17 +709,14 @@ function eAdm(){return{grupos:Object.fromEntries(Object.keys(GRP).map(g=>[g,{p1:
 function mergeP(v,base){const b=base||ep();if(!v)return b;if(v.grupos)for(const g of Object.keys(GRP)){if(v.grupos&&v.grupos[g])Object.assign(b.grupos[g],{p1:v.grupos[g].p1||'',p2:v.grupos[g].p2||''});}if(v.t8)b.t8=Array.isArray(v.t8)?[...v.t8]:Object.values(v.t8);['r32','r16','qf','sf'].forEach(k=>{if(v[k]){const a=Array.isArray(v[k])?v[k]:Object.values(v[k]);a.forEach((x,i)=>{if(i<b[k].length)b[k][i]=x||'';});}});if(v.fin)b.fin=v.fin;if(v.thr)b.thr=v.thr;return b;}
 function mergeA(v){const b=eAdm();if(!v)return b;if(v.grupos)for(const g of Object.keys(GRP)){if(v.grupos[g])Object.assign(b.grupos[g],{p1:v.grupos[g].p1||'',p2:v.grupos[g].p2||'',p3:v.grupos[g].p3||''});}if(v.t8)b.t8=Array.isArray(v.t8)?[...v.t8]:Object.values(v.t8);['r32','r16','qf','sf'].forEach(k=>{if(v[k]){const a=Array.isArray(v[k])?v[k]:Object.values(v[k]);a.forEach((x,i)=>{if(i<b[k].length)b[k][i]=x||'';});}});if(v.fin)b.fin=v.fin;if(v.thr)b.thr=v.thr;return b;}
 
-function toCloud(){return{friends:S.friends,admin:S.adminR,picks:S.picks,thirds_bracket:S.thirds_bracket,_ts:Date.now()};}
+function toCloud(){
+  // Update playerPins with current user's pin
+  if(ME.name&&ME.pin)S.playerPins[ME.name]=ME.pin;
+  return{friends:S.friends,admin:S.adminR,picks:S.picks,thirds_bracket:S.thirds_bracket,playerPins:S.playerPins,_ts:Date.now()};
+}
 function fromCloud(data){if(!data)return;if(data.friends){const nf=Array.isArray(data.friends)?data.friends:Object.values(data.friends);for(const f of nf)if(!S.picks[f])S.picks[f]=ep();S.friends=nf;if(!S.friends.includes(S.cur))S.cur=S.friends[0];}if(data.admin)S.adminR=mergeA(data.admin);if(data.picks)for(const[f,v]of Object.entries(data.picks))if(f!==S.cur)S.picks[f]=mergeP(v);if(data.thirds_bracket){const arr=Array.isArray(data.thirds_bracket)?data.thirds_bracket:Object.values(data.thirds_bracket);S.thirds_bracket=arr.map(t=>typeof t==='string'?t:(Array.isArray(t)?t[0]:''));while(S.thirds_bracket.length<8)S.thirds_bracket.push('');}}
 
-function boot(data){
-  S.friends=(data.friends&&(Array.isArray(data.friends)?data.friends:Object.values(data.friends)))||['Amigo 1'];
-  S.cur=S.friends[0];S.picks={};
-  for(const f of S.friends)S.picks[f]=(data.picks&&data.picks[f])?mergeP(data.picks[f]):ep();
-  S.adminR=data.admin?mergeA(data.admin):eAdm();
-  S.thirds_bracket=data.thirds_bracket?(Array.isArray(data.thirds_bracket)?data.thirds_bracket:Object.values(data.thirds_bracket)).map(t=>typeof t==='string'?t:(Array.isArray(t)?t[0]:'')):Array(8).fill('');
-  S._ts=data._ts||0;loadBackups();render();startPolling();
-}
+// boot replaced by bootWithIdentity above
 
 // ══════════════════════════════════════════════════════
 // MUTATIONS
@@ -574,13 +741,16 @@ function setT3(mi,v){S.thirds_bracket[mi]=v;const ridx=R32_THIRDS[mi].i;S.adminR
 // ══════════════════════════════════════════════════════
 // FRIENDS
 // ══════════════════════════════════════════════════════
-function confirmAdd(){const i=document.getElementById('ainp');if(!i)return;const n=i.value.trim();if(!n||S.friends.includes(n)){S.adding=false;render();return;}S.friends.push(n);S.picks[n]=ep();S.cur=n;scheduleSave();S.adding=false;render();}
+function confirmAdd(){
+  // Redirect to welcome modal which handles name+PIN together
+  S.adding=false;render();showWelcomeNew();
+}
 function cancelAdd(){S.adding=false;render();}
 function startEdit(n){S.editing=n;render();setTimeout(()=>{const i=document.getElementById('einp');if(i){i.focus();i.select();}},0);}
 function saveEdit(old){const i=document.getElementById('einp');const n=i?i.value.trim():'';if(n&&n!==old&&!S.friends.includes(n)){S.friends=S.friends.map(f=>f===old?n:f);S.picks[n]=S.picks[old];delete S.picks[old];if(S.cur===old)S.cur=n;scheduleSave();}S.editing=null;render();}
 function cancelEdit(){S.editing=null;render();}
 function removeFriend(n){if(S.friends.length<=1)return;if(!confirm('¿Eliminar a '+n+'?'))return;S.friends=S.friends.filter(f=>f!==n);delete S.picks[n];if(S.cur===n)S.cur=S.friends[0];scheduleSave();render();}
-function switchF(n){S.cur=n;render();}
+function switchF(n){switchFProtected(n);}
 
 // ══════════════════════════════════════════════════════
 // MOBILE
@@ -836,9 +1006,22 @@ function getProximosPartidos(){
 
 function rDashboard(){
   const hasR=Object.values(S.adminR.grupos).some(g=>g.p1);
-  const ranked=S.friends.map(f=>{const{tot,bd}=calcPts(f);return{n:f,tot,bd};}).sort((a,b)=>b.tot-a.tot);
+  // Personalized greeting
+  const greetName=ME.name||S.cur||'';
+  const greetHtml=greetName?`<div style="margin-bottom:18px;padding:16px 18px;background:var(--acl);border:1.5px solid var(--ac);border-radius:var(--r2)">
+    <div style="font-family:'Outfit',sans-serif;font-size:18px;font-weight:800;color:var(--ac);margin-bottom:4px">Hola, ${esc(greetName)} 👋</div>
+    <div style="font-size:13px;color:var(--mt)">${!hasR?'El torneo inicia el <strong>11 de junio</strong>. Llena tu quiniela y espera que el admin sincronice resultados.':'¡Los resultados están actualizados! Revisa tu posición abajo.'}</div>
+  </div>`:'';
+  const hasR2=hasR;
+  const ranked=S.friends.map(f=>{const{tot,bd}=calcPts(f);return{n:f,tot,bd};}).sort((a,b)=>{
+    // Sort by pts, but always put ME first if pts are equal
+    if(b.tot!==a.tot)return b.tot-a.tot;
+    if(a.n===ME.name)return -1;
+    if(b.n===ME.name)return 1;
+    return 0;
+  });
   const mx=maxPts();
-  let h='';
+  let h=greetHtml;
 
   // ── Próximos partidos ─────────────────────────────
   const proximos=getProximosPartidos();
@@ -941,6 +1124,11 @@ function rAdmin(){
 // ══════════════════════════════════════════════════════
 let _floatNextAction=null;
 function floatNextClick(){if(_floatNextAction)_floatNextAction();}
+const TAB_ORDER=['grupos','r32','r16','qf','sf','final'];
+function floatBackClick(){
+  const idx=TAB_ORDER.indexOf(S.tab);
+  if(idx>0){S.tab=TAB_ORDER[idx-1];render();}
+}
 function renderFloatNext(){
   const playerTabs=['grupos','r32','r16','qf','sf','final'];
   const el=document.getElementById('float-next');
@@ -972,6 +1160,7 @@ function renderFloatNext(){
   _floatNextAction=action;
   const txtEl=el.querySelector('.fn-txt');
   const btnEl=el.querySelector('.fn-btn');
+  const backBtn=document.getElementById('fn-back-btn');
   if(!txt){el.style.display='none';return;}
   el.style.display='block';
   el.style.background=action?'var(--gnl)':'var(--card)';
@@ -979,6 +1168,11 @@ function renderFloatNext(){
   txtEl.innerHTML=`<span style="color:${action?'var(--gnd)':'var(--am)'}">${txt}</span>`;
   if(action){btnEl.style.display='inline-flex';btnEl.textContent=btnLbl;}
   else{btnEl.style.display='none';}
+  // Back button: show if not on first tab
+  if(backBtn){
+    const idx=TAB_ORDER.indexOf(S.tab);
+    backBtn.style.display=idx>0?'inline-flex':'none';
+  }
 }
 
 // ══════════════════════════════════════════════════════
