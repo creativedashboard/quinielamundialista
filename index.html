@@ -605,7 +605,7 @@ let S={
   sync:'idle',syncMsg:'',
   _ts:0
 };
-// No device identity needed — simple tab-based switching
+const ME={name:'',color:''}; // placeholder — not used
 
 // User color palette
 const UCOLORS=[
@@ -1467,7 +1467,7 @@ function rFinal(adm){
 
 function rDashboard(){
   const hasR=Object.values(S.adminR.grupos).some(g=>g.p1);
-  const greetName=ME.name||S.cur||'';
+  const greetName=S.cur||"";
   let h='';
   if(greetName){
     h+=`<div class="card" style="padding:16px 18px;margin-bottom:14px">
@@ -1486,7 +1486,7 @@ function rDashboard(){
     if(S.friends.length>0){
       h+=`<div class="lb"><div class="lbhdr"><span class="lbhtitle">Participantes</span><span class="lbhsub">${S.friends.length} registrados</span></div>`;
       S.friends.forEach((f,i)=>{
-        const m=['🥇','🥈','🥉'];const isMe=f===ME.name;
+        const m=['🥇','🥈','🥉'];const isMe=f===S.cur;
         h+=`<div class="lbrow${isMe?' me':''}"><div class="lbrnk">${m[i]||i+1}</div>
           <div style="flex:1"><div class="lbnm">${esc(f)}${isMe?' <span style="font-size:10px;opacity:.6">(tú)</span>':''}</div>
           <div class="lbdet">Esperando resultados del torneo...</div></div>
@@ -1500,8 +1500,8 @@ function rDashboard(){
   // Ranked list — ME always first on ties
   const ranked=S.friends.map(f=>{const{tot,bd}=calcPts(f);return{n:f,tot,bd};}).sort((a,b)=>{
     if(b.tot!==a.tot)return b.tot-a.tot;
-    if(a.n===ME.name)return -1;
-    if(b.n===ME.name)return 1;
+    
+    
     return 0;
   });
   const mx=maxPts();
@@ -1519,7 +1519,7 @@ function rDashboard(){
   </div>`;
   h+=`<div class="lb"><div class="lbhdr"><span class="lbhtitle">🏆 Clasificación en vivo</span><span class="lbhsub">${S.friends.length} participantes</span></div>`;
   ranked.forEach((s,i)=>{
-    const m=['🥇','🥈','🥉'];const isMe=s.n===ME.name;const pct=mx>0?Math.round((s.tot/mx)*100):0;
+    const m=['🥇','🥈','🥉'];const isMe=s.n===S.cur;const pct=mx>0?Math.round((s.tot/mx)*100):0;
     const chips=[s.bd.grp?`Grupos:${s.bd.grp}`:null,s.bd.t8?`3eros:${s.bd.t8}`:null,s.bd.r32?`16avos:${s.bd.r32}`:null,s.bd.r16?`Oct:${s.bd.r16}`:null,s.bd.qf?`1/4:${s.bd.qf}`:null,s.bd.sf?`SF:${s.bd.sf}`:null,s.bd.fin?`Final:${s.bd.fin}`:null].filter(Boolean).join(' · ');
     h+=`<div class="lbrow${isMe?' me':''}">
       <div class="lbrnk">${m[i]||i+1}</div>
